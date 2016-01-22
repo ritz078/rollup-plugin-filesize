@@ -1,0 +1,25 @@
+{
+  "name": "rollup-plugin-filesize",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ritz078/rollup-plugin-filesize.git"
+  },
+  "keywords": [
+    "rollup-plugin"
+  ],
+  "author": "Ritesh Kumar",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ritz078/rollup-plugin-filesize/issues"
+  },
+  "homepage": "https://github.com/ritz078/rollup-plugin-filesize#readme",
+  "dependencies": {
+    "filesize": "^3.2.0"
+  }
+}
