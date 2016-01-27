@@ -2,7 +2,7 @@ import fileSize from 'filesize';
 import boxen from 'boxen';
 import Chalk from 'chalk';
 
-var chalk = new Chalk({enabled:true});
+var chalk = new Chalk.constructor({enabled:true});
 
 export default function filesize(){
     return {

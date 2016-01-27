@@ -6,7 +6,7 @@ var fileSize = _interopDefault(require('filesize'));
 var boxen = _interopDefault(require('boxen'));
 var Chalk = _interopDefault(require('chalk'));
 
-var chalk = new Chalk({ enabled: true });
+var chalk = new Chalk.constructor({ enabled: true });
 
 function filesize() {
     return {
