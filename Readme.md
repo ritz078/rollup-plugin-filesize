@@ -2,6 +2,8 @@
 
 > A rollup plugin to show filesize in the cli
 
+![](screen.png)
+
 ## Installation
 
 ```
@@ -38,7 +40,7 @@ return the command that you want to log. Eg:
 
 ```js
 filesize(
-	render : function (size){
+	render : function (options, size){
 		return size;
 	}
 )
