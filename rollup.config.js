@@ -4,7 +4,8 @@ export default {
     external: [ 'filesize', 'boxen', 'chalk', 'lodash' ],
     plugins: [
         babel({
-            presets: [ 'es2015-rollup' ]
+					babelrc:false,
+					presets: [ 'es2015-rollup' ]
         })
     ],
     format: 'cjs',

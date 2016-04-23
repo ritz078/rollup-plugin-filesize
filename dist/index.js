@@ -30,6 +30,7 @@ function filesize() {
 			var size = fileSize(Buffer.byteLength(code), opts.format);
 
 			console.log(opts.render(size));
+			return opts.render(size);
 		}
 	};
 };
