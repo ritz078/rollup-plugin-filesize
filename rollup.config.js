@@ -1,7 +1,7 @@
 import babel from 'rollup-plugin-babel';
 
 export default {
-    external: [ 'filesize', 'boxen', 'chalk', 'lodash' ],
+    external: [ 'filesize', 'boxen', 'chalk', 'deep-assign' ],
     plugins: [
         babel({
 					babelrc:false,
