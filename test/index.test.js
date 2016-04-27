@@ -8,11 +8,11 @@ const x = filesize();
 const code = 'Abaculuss velum in secundus cirpi! Sunt amicitiaes imperium peritus, bassus exemplares.';
 
 test('fileSize should return a string', t => {
-	t.ok(typeof x.transformBundle(code) === 'string');
+	t.ok(typeof x.transformBundle(code).log === 'string');
 });
 
 test('fileSize should return correct string', t => {
-	t.ok(x.transformBundle(code).indexOf('87') >= 0)
+	t.ok(x.transformBundle(code).log.indexOf('87') >= 0)
 });
 
 test('fileSize should apply correct theme based on settings', t => {
@@ -23,7 +23,7 @@ test('fileSize should apply correct theme based on settings', t => {
 	const y        = filesize(options);
 	const expected = boxen(chalk.black.bold('Bundle size : ') + chalk.blue.bold('87 B'), { padding: 1 });
 
-	t.ok(y.transformBundle(code) === expected);
+	t.ok(y.transformBundle(code).log === expected);
 });
 
 test('fileSize should apply correct template', t => {
@@ -35,5 +35,5 @@ test('fileSize should apply correct template', t => {
 
 	const z = filesize(options);
 	const expected = '87 B';
-	t.ok(z.transformBundle(code) === expected)
+	t.ok(z.transformBundle(code).log === expected)
 });

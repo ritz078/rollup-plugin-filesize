@@ -31,7 +31,13 @@ export default function filesize (options = {}) {
 			let size = fileSize(Buffer.byteLength(code), opts.format);
 
 			console.log(opts.render(opts, size));
-			return opts.render(opts, size);
+			return {
+				log: opts.render(opts, size),
+				code: code,
+				map: {
+					mappings: ''
+				}
+			}
 		}
 	}
 };
