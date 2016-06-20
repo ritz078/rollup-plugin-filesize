@@ -21,7 +21,8 @@ test('fileSize should apply correct theme based on settings', t => {
 	};
 	const chalk    = new Chalk.constructor({ enabled: true });
 	const y        = filesize(options);
-	const expected = boxen(chalk.black.bold('Bundle size : ') + chalk.blue.bold('87 B'), { padding: 1 });
+	const expected = boxen(chalk.black.bold('Bundle size : ') + chalk.blue.bold('87 B') + ', '+
+		chalk.black.bold('Gzipped size : ') + chalk.blue.bold('93 B') , { padding: 1 });
 
 	t.ok(y.transformBundle(code).log === expected);
 });
