@@ -10,11 +10,11 @@ export default function filesize (options = {}) {
 
 	function render (opt, size, gzip) {
 		return opt.theme == 'dark' ? (
-			boxen(chalk.green.bold('Bundle size : ') + chalk.yellow.bold(size) + ', ' +
-				chalk.green.bold('Gzipped size : ') + chalk.yellow.bold(gzip), { padding: 1 })
+			boxen(chalk.green.bold('Bundle size: ') + chalk.yellow.bold(size) + ', ' +
+				chalk.green.bold('Gzipped size: ') + chalk.yellow.bold(gzip), { padding: 1 })
 		) : (
-			boxen(chalk.black.bold('Bundle size : ') + chalk.blue.bold(size) + ', ' +
-				chalk.black.bold('Gzipped size : ') + chalk.blue.bold(gzip) , { padding: 1 })
+			boxen(chalk.black.bold('Bundle size: ') + chalk.blue.bold(size) + ', ' +
+				chalk.black.bold('Gzipped size: ') + chalk.blue.bold(gzip), { padding: 1 })
 		);
 	}
 
