@@ -1,4 +1,4 @@
-# rollup-pugin-filesize
+# rollup-plugin-filesize
 
 > A rollup plugin to show filesize in the cli
 
