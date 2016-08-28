@@ -39,11 +39,11 @@ type : `function`
 return the command that you want to log. Eg:
 
 ```js
-filesize(
+filesize({
 	render : function (options, size){
 		return size;
 	}
-)
+})
 ```
 
 #### theme
