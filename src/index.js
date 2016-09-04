@@ -14,23 +14,23 @@ export default function filesize (options = {}) {
 				chalk.green.bold('Gzipped size : ') + chalk.yellow.bold(gzip), { padding: 1 })
 		) : (
 			boxen(chalk.black.bold('Bundle size : ') + chalk.blue.bold(size) + ', ' +
-				chalk.black.bold('Gzipped size : ') + chalk.blue.bold(gzip) , { padding: 1 })
+				chalk.black.bold('Gzipped size : ') + chalk.blue.bold(gzip), { padding: 1 })
 		);
 	}
 
 	let defaultOptions = {
 		format: {},
-		theme : 'dark',
+		theme: 'dark',
 		render: render
 	};
 
 	let opts = deepAssign({}, defaultOptions, options);
-	if(options.render){
+	if (options.render) {
 		opts.render = options.render;
 	}
 
 	return {
-		transformBundle(code){
+		ongenerate(bundle, { code }){
 			let size = fileSize(Buffer.byteLength(code), opts.format);
 			let gzipSize = fileSize(gzip.sync(code), opts.format);
 
