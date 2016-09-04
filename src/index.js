@@ -6,17 +6,17 @@ import gzip from 'gzip-size';
 
 var chalk = new Chalk.constructor({ enabled: true });
 
-export default function filesize (options = {}) {
+function render (opt, size, gzip) {
+	return opt.theme == 'dark' ? (
+		boxen(chalk.green.bold('Bundle size: ') + chalk.yellow.bold(size) + ', ' +
+			chalk.green.bold('Gzipped size: ') + chalk.yellow.bold(gzip), { padding: 1 })
+	) : (
+		boxen(chalk.black.bold('Bundle size: ') + chalk.blue.bold(size) + ', ' +
+			chalk.black.bold('Gzipped size: ') + chalk.blue.bold(gzip), { padding: 1 })
+	);
+}
 
-	function render (opt, size, gzip) {
-		return opt.theme == 'dark' ? (
-			boxen(chalk.green.bold('Bundle size: ') + chalk.yellow.bold(size) + ', ' +
-				chalk.green.bold('Gzipped size: ') + chalk.yellow.bold(gzip), { padding: 1 })
-		) : (
-			boxen(chalk.black.bold('Bundle size: ') + chalk.blue.bold(size) + ', ' +
-				chalk.black.bold('Gzipped size: ') + chalk.blue.bold(gzip), { padding: 1 })
-		);
-	}
+export default function filesize (options = {}) {
 
 	let defaultOptions = {
 		format: {},
@@ -30,18 +30,14 @@ export default function filesize (options = {}) {
 	}
 
 	return {
-		ongenerate(bundle, { code }){
+		getData (code) {
 			let size = fileSize(Buffer.byteLength(code), opts.format);
 			let gzipSize = fileSize(gzip.sync(code), opts.format);
+			return opts.render(opts, size, gzipSize);
+		},
 
-			console.log(opts.render(opts, size, gzipSize));
-			return {
-				log: opts.render(opts, size, gzipSize),
-				code: code,
-				map: {
-					mappings: ''
-				}
-			}
+		ongenerate(bundle, { code }){
+			console.log(this.getData(code));
 		}
 	}
 };
