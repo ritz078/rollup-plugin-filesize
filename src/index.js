@@ -1,10 +1,8 @@
 import fileSize from 'filesize';
 import boxen from 'boxen';
-import Chalk from 'chalk';
+import chalk from 'chalk';
 import deepAssign from 'deep-assign';
 import gzip from 'gzip-size';
-
-var chalk = new Chalk.constructor({ enabled: true });
 
 function render (opt, size, gzip) {
 	return opt.theme == 'dark' ? (
