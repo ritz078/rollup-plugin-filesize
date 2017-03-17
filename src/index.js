@@ -9,7 +9,7 @@ function render (opt, size, gzip, bundle) {
 	const secondaryColor = opt.theme === 'dark' ? 'yellow' : 'blue'
 
 	return boxen(
-			colors[primaryColor].bold('Destination: ') + colors[secondaryColor](bundle.dest) + '\n' +
+			(bundle.dest ? (colors[primaryColor].bold('Destination: ') + colors[secondaryColor](bundle.dest) + '\n') : '') +
 			colors[primaryColor].bold('Bundle size: ') + colors[secondaryColor](size) + ', ' +
 			colors[primaryColor].bold('Gzipped size: ') + colors[secondaryColor](gzip), { padding: 1 }
 		)
