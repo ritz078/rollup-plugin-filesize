@@ -26,6 +26,12 @@ rollup({
 
 ## options
 
+#### showGzippedSize
+type: `boolean`
+default: true
+
+Whether to show Gzipped size or not
+
 #### format
 type : `object`
 

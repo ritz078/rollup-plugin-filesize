@@ -9,9 +9,8 @@ function render (opt, size, gzip, bundle) {
 	const secondaryColor = opt.theme === 'dark' ? 'yellow' : 'blue'
 
 	return boxen(
-			(bundle.dest ? (colors[primaryColor].bold('Destination: ') + colors[secondaryColor](bundle.dest) + '\n') : '') +
-			colors[primaryColor].bold('Bundle size: ') + colors[secondaryColor](size) + ', ' +
-			colors[primaryColor].bold('Gzipped size: ') + colors[secondaryColor](gzip), { padding: 1 }
+			`${bundle.dest ? (colors[primaryColor].bold('Destination: ') + colors[secondaryColor](bundle.dest) + '\n') : ''}${colors[primaryColor].bold('Bundle size: ')}${colors[secondaryColor](size)}${opt.showGzippedSize ? (', ' +
+				colors[primaryColor].bold('Gzipped size: ') + colors[secondaryColor](gzip)) : ''}`, { padding: 1 }
 		)
 }
 
@@ -20,7 +19,8 @@ export default function filesize (options = {}) {
 	let defaultOptions = {
 		format: {},
 		theme: 'dark',
-		render: render
+		render: render,
+		showGzippedSize: true
 	};
 
 	let opts = deepAssign({}, defaultOptions, options);
