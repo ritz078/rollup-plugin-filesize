@@ -66,3 +66,4 @@ choose based on your terminal theme.
 ## License
 MIT
 
+<a target='_blank' rel='nofollow' href='https://app.codesponsor.io/link/8CBegPnJTnjtddvd2E18Su4F/ritz078/rollup-plugin-filesize'>  <img alt='Sponsor' width='888' height='68' src='https://app.codesponsor.io/embed/8CBegPnJTnjtddvd2E18Su4F/ritz078/rollup-plugin-filesize.svg' /></a>
