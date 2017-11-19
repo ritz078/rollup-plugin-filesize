@@ -9,9 +9,9 @@ function render(opt, size, gzip, bundle) {
 	const secondaryColor = opt.theme === "dark" ? "yellow" : "blue";
 
 	return boxen(
-		`${bundle.dest
+		`${bundle.file
 			? colors[primaryColor].bold("Destination: ") +
-					colors[secondaryColor](bundle.dest) +
+					colors[secondaryColor](bundle.file) +
 					"\n"
 			: ""}${colors[primaryColor].bold("Bundle size: ")}${colors[
 			secondaryColor
