@@ -8,7 +8,9 @@ export default {
 					presets: [ 'es2015-rollup' ]
         })
     ],
-    format: 'cjs',
-    entry: 'src/index.js',
-    dest: 'dist/index.js'
+    input: 'src/index.js',
+    output: {
+        file: 'dist/index.js',
+        format: 'cjs'        
+    }
 };
