@@ -24,7 +24,7 @@ function render(opt, size, gzip, bundle) {
 	);
 }
 
-export default function filesize(options = {}) {
+export default function filesize(options = {}, env) {
 	let defaultOptions = {
 		format: {},
 		theme: "dark",
@@ -37,17 +37,21 @@ export default function filesize(options = {}) {
 		opts.render = options.render;
 	}
 
-	return {
-		getData(bundle, code) {
-			let size = fileSize(Buffer.byteLength(code), opts.format);
-			let gzipSize = opts.showGzippedSize
-				? fileSize(gzip.sync(code), opts.format)
-				: "";
-			return opts.render(opts, size, gzipSize, bundle);
-		},
+	const getData = function(bundle, code) {
+		let size = fileSize(Buffer.byteLength(code), opts.format);
+		let gzipSize = opts.showGzippedSize
+			? fileSize(gzip.sync(code), opts.format)
+			: "";
+		return opts.render(opts, size, gzipSize, bundle);
+	};
 
+	if (env === "test") {
+		return getData
+	}
+
+	return {
 		ongenerate(bundle, { code }) {
-			console.log(this.getData(bundle, code));
+			console.log(getData(bundle, code));
 		}
 	};
 }
