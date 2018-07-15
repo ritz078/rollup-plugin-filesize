@@ -32,6 +32,12 @@ default: true
 
 Whether to show Gzipped size or not
 
+#### showBrotliSize
+type: `boolean`
+default: false
+
+Whether to show [Brotli](https://www.wikiwand.com/en/Brotli) size or not
+
 #### format
 type : `object`
 
