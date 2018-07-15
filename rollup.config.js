@@ -2,7 +2,7 @@ import babel from 'rollup-plugin-babel';
 import filesize from "./src/index"
 
 export default {
-    external: [ 'filesize', 'boxen', 'chalk', 'deep-assign', 'colors', 'gzip-size' ],
+    external: [ 'filesize', 'boxen', 'chalk', 'deep-assign', 'colors', 'gzip-size', 'brotli-size' ],
     plugins: [
         babel({
 					babelrc:false,
@@ -13,6 +13,6 @@ export default {
     input: 'src/index.js',
     output: {
         file: 'dist/index.js',
-        format: 'cjs'        
+        format: 'cjs'
     }
 };
