@@ -34,7 +34,8 @@
     "colors": "^1.1.2",
     "deep-assign": "^2.0.0",
     "filesize": "^3.5.6",
-    "gzip-size": "^3.0.0"
+    "gzip-size": "^3.0.0",
+    "terser": "^3.8.0"
   },
   "devDependencies": {
     "ava": "^0.19.1",
@@ -43,8 +44,7 @@
     "babel-register": "^6.7.2",
     "prettier": "^1.13.7",
     "rollup": "^0.60.1",
-    "rollup-plugin-babel": "^3.0.4",
-    "terser": "^3.8.0"
+    "rollup-plugin-babel": "^3.0.4"
   },
   "ava": {
     "require": "babel-register",
