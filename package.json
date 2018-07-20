@@ -1,6 +1,6 @@
 {
   "name": "rollup-plugin-filesize",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "A rollup plugin to show filesize in the cli",
   "main": "dist/index.js",
   "jsnext:main": "src/index.js",
