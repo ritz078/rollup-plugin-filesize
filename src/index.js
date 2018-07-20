@@ -4,29 +4,25 @@ import colors from "colors";
 import deepAssign from "deep-assign";
 import gzip from "gzip-size";
 import brotli from "brotli-size";
+import terser from "terser";
 
-function render(opt, size, gzip, brotliSize, bundle) {
+function render(opt, size, gzip, brotliSize, minifiedSize, bundle) {
 	const primaryColor = opt.theme === "dark" ? "green" : "black";
 	const secondaryColor = opt.theme === "dark" ? "yellow" : "blue";
 
-	return boxen(
-		`${bundle.file
-			? colors[primaryColor].bold("Destination: ") +
-					colors[secondaryColor](bundle.file) +
-					"\n"
-			: ""}${colors[primaryColor].bold("Bundle size: ")}${colors[
-			secondaryColor
-		](size)}${opt.showGzippedSize
-			? ", " +
-					colors[primaryColor].bold("Gzipped size: ") +
-					colors[secondaryColor](gzip)
-			: ""}${opt.showBrotliSize
-			? ", " +
-			colors[primaryColor].bold("Brotli size: ") +
-			colors[secondaryColor](brotliSize)
-			: ""}`,
-		{ padding: 1 }
-	);
+	const title = colors[primaryColor].bold;
+	const value = colors[secondaryColor];
+
+	const values = [
+		...(bundle.file ? [`${title("Destination: ")}${value(bundle.file)}`] : []),
+		...[`${title("Bundle Size: ")} ${value(size)}`],
+		...[`${title("Minified and Gzipped Size: ")} ${value(minifiedSize)}`],
+		...(opt.showBrotliSize
+			? [`${title("Brothli size: ")}${value(brotliSize)}`]
+			: [])
+	];
+
+	return boxen(values.join("\n"), { padding: 1 });
 }
 
 export default function filesize(options = {}, env) {
@@ -51,11 +47,14 @@ export default function filesize(options = {}, env) {
 		let brotliSize = opts.showBrotliSize
 			? fileSize(brotli.sync(code), opts.format)
 			: "";
-		return opts.render(opts, size, gzipSize, brotliSize, bundle);
+
+		let minifiedSize = fileSize(gzip.sync(terser.minify(code).code));
+
+		return opts.render(opts, size, gzipSize, brotliSize, minifiedSize, bundle);
 	};
 
 	if (env === "test") {
-		return getData
+		return getData;
 	}
 
 	return {
