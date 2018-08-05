@@ -58,6 +58,7 @@ export default function filesize(options = {}, env) {
 	}
 
 	return {
+		name: "filesize",
 		ongenerate(bundle, { code }) {
 			console.log(getData(bundle, code));
 		}
