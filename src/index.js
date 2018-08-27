@@ -18,7 +18,7 @@ function render(opt, size, gzip, brotliSize, minifiedSize, bundle) {
 		...[`${title("Bundle Size: ")} ${value(size)}`],
 		...[`${title("Minified and Gzipped Size: ")} ${value(minifiedSize)}`],
 		...(opt.showBrotliSize
-			? [`${title("Brothli size: ")}${value(brotliSize)}`]
+			? [`${title("Brotli size: ")}${value(brotliSize)}`]
 			: [])
 	];
 
