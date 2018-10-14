@@ -1,18 +1,19 @@
-import babel from 'rollup-plugin-babel';
-import filesize from "./src/index"
+import babel from "rollup-plugin-babel";
+import filesize from "./src/index";
+import pkg from "./package.json";
 
 export default {
-    external: [ 'filesize', 'boxen', 'chalk', 'deep-assign', 'colors', 'gzip-size', 'brotli-size' ],
-    plugins: [
-        babel({
-					babelrc:false,
-					presets: [ 'es2015-rollup' ]
-        }),
-        filesize()
-    ],
-    input: 'src/index.js',
-    output: {
-        file: 'dist/index.js',
-        format: 'cjs'
-    }
+	external: Object.keys(pkg.dependencies),
+	plugins: [
+		babel({
+			babelrc: false,
+			presets: ["es2015-rollup"]
+		}),
+		filesize()
+	],
+	input: "src/index.js",
+	output: {
+		file: "dist/index.js",
+		format: "cjs"
+	}
 };

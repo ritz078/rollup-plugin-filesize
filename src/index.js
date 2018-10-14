@@ -4,9 +4,9 @@ import colors from "colors";
 import deepAssign from "deep-assign";
 import gzip from "gzip-size";
 import brotli from "brotli-size";
-import terser from "terser";
+import minify from "babel-minify";
 
-function render(opt, size, gzip, brotliSize, minifiedSize, bundle) {
+function render(opt, bundle, sizes) {
 	const primaryColor = opt.theme === "dark" ? "green" : "black";
 	const secondaryColor = opt.theme === "dark" ? "yellow" : "blue";
 
@@ -15,11 +15,10 @@ function render(opt, size, gzip, brotliSize, minifiedSize, bundle) {
 
 	const values = [
 		...(bundle.file ? [`${title("Destination: ")}${value(bundle.file)}`] : []),
-		...[`${title("Bundle Size: ")} ${value(size)}`],
-		...[`${title("Minified and Gzipped Size: ")} ${value(minifiedSize)}`],
-		...(opt.showBrotliSize
-			? [`${title("Brothli size: ")}${value(brotliSize)}`]
-			: [])
+		...[`${title("Bundle Size: ")} ${value(sizes.bundleSize)}`],
+		...(sizes.minSize ? [`${title("Minified Size: ")} ${value(sizes.minSize)}`] : []),
+		...(sizes.gzipSize ? [`${title("Gzipped Size: ")} ${value(sizes.gzipSize)}`] : []),
+		...(sizes.brotliSize ? [`${title("Brothli size: ")}${value(sizes.brotliSize)}`] : [])
 	];
 
 	return boxen(values.join("\n"), { padding: 1 });
@@ -31,7 +30,8 @@ export default function filesize(options = {}, env) {
 		theme: "dark",
 		render: render,
 		showGzippedSize: true,
-		showBrotliSize: false
+		showBrotliSize: false,
+		showMinifiedSize: true
 	};
 
 	let opts = deepAssign({}, defaultOptions, options);
@@ -40,17 +40,24 @@ export default function filesize(options = {}, env) {
 	}
 
 	const getData = function(bundle, code) {
-		let size = fileSize(Buffer.byteLength(code), opts.format);
-		let gzipSize = opts.showGzippedSize
-			? fileSize(gzip.sync(code), opts.format)
-			: "";
-		let brotliSize = opts.showBrotliSize
+		const sizes = {};
+		sizes.bundleSize = fileSize(Buffer.byteLength(code), opts.format);
+
+		sizes.brotliSize = opts.showBrotliSize
 			? fileSize(brotli.sync(code), opts.format)
 			: "";
 
-		let minifiedSize = fileSize(gzip.sync(terser.minify(code).code));
+		if (opts.showMinifiedSize || opts.showGzippedSize) {
+			const minifiedCode = minify(code).code;
+			sizes.minSize = opts.showMinifiedSize
+				? fileSize(minifiedCode.length, opts.format)
+				: "";
+			sizes.gzipSize = opts.showGzippedSize
+				? fileSize(gzip.sync(minifiedCode), opts.format)
+				: "";
+		}
 
-		return opts.render(opts, size, gzipSize, brotliSize, minifiedSize, bundle);
+		return opts.render(opts, bundle, sizes);
 	};
 
 	if (env === "test") {

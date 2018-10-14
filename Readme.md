@@ -26,6 +26,12 @@ rollup({
 
 ## options
 
+#### showMinifiedSize
+type: `boolean`
+default: true
+
+Whether to show minified size or not
+
 #### showGzippedSize
 type: `boolean`
 default: true
@@ -52,8 +58,8 @@ return the command that you want to log. Eg:
 
 ```js
 filesize({
-	render : function (options, size){
-		return size;
+	render : function (options, bundle, { minSize, gzipSize, brotliSize, bundleSize }){
+		return minSize;
 	}
 })
 ```

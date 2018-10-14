@@ -15,12 +15,13 @@ test('fileSize should return correct string', t => {
 
 test('fileSize should apply correct template', t => {
 	const options = {
-		render: function (opts, size) {
-			return size;
+		render: function (opts, bundle, { gzipSize }) {
+			return gzipSize;
 		}
 	};
 
 	const z = filesize(options, "test");
-	const expected = '54 B';
+	const expected = '47 B';
+	console.log(z({dest: 'abc.js'}, code))
 	t.is(z({dest: 'abc.js'}, code), expected)
 });
