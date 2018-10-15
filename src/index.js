@@ -4,7 +4,7 @@ import colors from "colors";
 import deepAssign from "deep-assign";
 import gzip from "gzip-size";
 import brotli from "brotli-size";
-import minify from "babel-minify";
+import terser from "terser";
 
 function render(opt, bundle, sizes) {
 	const primaryColor = opt.theme === "dark" ? "green" : "black";
@@ -18,7 +18,7 @@ function render(opt, bundle, sizes) {
 		...[`${title("Bundle Size: ")} ${value(sizes.bundleSize)}`],
 		...(sizes.minSize ? [`${title("Minified Size: ")} ${value(sizes.minSize)}`] : []),
 		...(sizes.gzipSize ? [`${title("Gzipped Size: ")} ${value(sizes.gzipSize)}`] : []),
-		...(sizes.brotliSize ? [`${title("Brothli size: ")}${value(sizes.brotliSize)}`] : [])
+		...(sizes.brotliSize ? [`${title("Brotli size: ")}${value(sizes.brotliSize)}`] : [])
 	];
 
 	return boxen(values.join("\n"), { padding: 1 });
@@ -48,7 +48,7 @@ export default function filesize(options = {}, env) {
 			: "";
 
 		if (opts.showMinifiedSize || opts.showGzippedSize) {
-			const minifiedCode = minify(code).code;
+			const minifiedCode = terser.minify(code).code;
 			sizes.minSize = opts.showMinifiedSize
 				? fileSize(minifiedCode.length, opts.format)
 				: "";
