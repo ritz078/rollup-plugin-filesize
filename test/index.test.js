@@ -21,7 +21,7 @@ test('fileSize should apply correct template', t => {
 	};
 
 	const z = filesize(options, "test");
-	const expected = '47 B';
+	const expected = '49 B';
 	console.log(z({dest: 'abc.js'}, code))
 	t.is(z({dest: 'abc.js'}, code), expected)
 });
