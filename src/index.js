@@ -6,7 +6,7 @@ import gzip from "gzip-size";
 import brotli from "brotli-size";
 import terser from "terser";
 
-function render(opt, bundle, sizes) {
+function render(opt, outputOptions, sizes) {
 	const primaryColor = opt.theme === "dark" ? "green" : "black";
 	const secondaryColor = opt.theme === "dark" ? "yellow" : "blue";
 
@@ -14,7 +14,7 @@ function render(opt, bundle, sizes) {
 	const value = colors[secondaryColor];
 
 	const values = [
-		...(bundle.file ? [`${title("Destination: ")}${value(bundle.file)}`] : []),
+		...(outputOptions.file ? [`${title("Destination: ")}${value(outputOptions.file)}`] : []),
 		...[`${title("Bundle Size: ")} ${value(sizes.bundleSize)}`],
 		...(sizes.minSize ? [`${title("Minified Size: ")} ${value(sizes.minSize)}`] : []),
 		...(sizes.gzipSize ? [`${title("Gzipped Size: ")} ${value(sizes.gzipSize)}`] : []),
@@ -39,7 +39,7 @@ export default function filesize(options = {}, env) {
 		opts.render = options.render;
 	}
 
-	const getData = function(bundle, code) {
+	const getData = function(outputOptions, code) {
 		const sizes = {};
 		sizes.bundleSize = fileSize(Buffer.byteLength(code), opts.format);
 
@@ -57,7 +57,7 @@ export default function filesize(options = {}, env) {
 				: "";
 		}
 
-		return opts.render(opts, bundle, sizes);
+		return opts.render(opts, outputOptions, sizes);
 	};
 
 	if (env === "test") {
@@ -66,8 +66,10 @@ export default function filesize(options = {}, env) {
 
 	return {
 		name: "filesize",
-		ongenerate(bundle, { code }) {
-			console.log(getData(bundle, code));
+		generateBundle(outputOptions, bundle, isWrite) {
+			Object.keys(bundle)
+				.map(fileName => bundle[fileName])
+				.forEach(bundle => console.log(getData(outputOptions, bundle.code)));
 		}
 	};
 }
