@@ -6,7 +6,7 @@ import gzip from "gzip-size";
 import brotli from "brotli-size";
 import terser from "terser";
 
-function render(opt, outputOptions, sizes) {
+function render(opt, outputOptions, info) {
 	const primaryColor = opt.theme === "dark" ? "green" : "black";
 	const secondaryColor = opt.theme === "dark" ? "yellow" : "blue";
 
@@ -14,11 +14,13 @@ function render(opt, outputOptions, sizes) {
 	const value = colors[secondaryColor];
 
 	const values = [
-		...(outputOptions.file ? [`${title("Destination: ")}${value(outputOptions.file)}`] : []),
-		...[`${title("Bundle Size: ")} ${value(sizes.bundleSize)}`],
-		...(sizes.minSize ? [`${title("Minified Size: ")} ${value(sizes.minSize)}`] : []),
-		...(sizes.gzipSize ? [`${title("Gzipped Size: ")} ${value(sizes.gzipSize)}`] : []),
-		...(sizes.brotliSize ? [`${title("Brotli size: ")}${value(sizes.brotliSize)}`] : [])
+    ...(outputOptions.file ?
+      [`${title("Destination: ")}${value(outputOptions.file)}`] :
+      (info.fileName ? [`${title("Bundle Name: ")} ${value(info.fileName)}`] : [])),
+		...[`${title("Bundle Size: ")} ${value(info.bundleSize)}`],
+		...(info.minSize ? [`${title("Minified Size: ")} ${value(info.minSize)}`] : []),
+		...(info.gzipSize ? [`${title("Gzipped Size: ")} ${value(info.gzipSize)}`] : []),
+		...(info.brotliSize ? [`${title("Brotli size: ")}${value(info.brotliSize)}`] : [])
 	];
 
 	return boxen(values.join("\n"), { padding: 1 });
@@ -39,25 +41,29 @@ export default function filesize(options = {}, env) {
 		opts.render = options.render;
 	}
 
-	const getData = function(outputOptions, code) {
-		const sizes = {};
-		sizes.bundleSize = fileSize(Buffer.byteLength(code), opts.format);
+	const getData = function(outputOptions, bundle) {
+    const { code, fileName } = bundle;
+    const info = {};
 
-		sizes.brotliSize = opts.showBrotliSize
+    info.fileName = fileName;
+
+		info.bundleSize = fileSize(Buffer.byteLength(code), opts.format);
+
+		info.brotliSize = opts.showBrotliSize
 			? fileSize(brotli.sync(code), opts.format)
 			: "";
 
 		if (opts.showMinifiedSize || opts.showGzippedSize) {
 			const minifiedCode = terser.minify(code).code;
-			sizes.minSize = opts.showMinifiedSize
+			info.minSize = opts.showMinifiedSize
 				? fileSize(minifiedCode.length, opts.format)
 				: "";
-			sizes.gzipSize = opts.showGzippedSize
+			info.gzipSize = opts.showGzippedSize
 				? fileSize(gzip.sync(minifiedCode), opts.format)
 				: "";
 		}
 
-		return opts.render(opts, outputOptions, sizes);
+		return opts.render(opts, outputOptions, info);
 	};
 
 	if (env === "test") {
@@ -71,7 +77,7 @@ export default function filesize(options = {}, env) {
 				.map(fileName => bundle[fileName])
 				.filter(currentBundle => !currentBundle.isAsset)
 				.forEach((currentBundle) => {
-					console.log(getData(outputOptions, currentBundle.code))
+					console.log(getData(outputOptions, currentBundle))
 				});
 		}
 	};
