@@ -7,7 +7,7 @@ export default {
 	plugins: [
 		babel({
 			babelrc: false,
-			presets: ["es2015-rollup"]
+			presets: ["@babel/preset-env"]
 		}),
 		filesize()
 	],
