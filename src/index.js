@@ -3,8 +3,9 @@ import boxen from "boxen";
 import colors from "colors";
 import deepAssign from "deep-assign";
 import gzip from "gzip-size";
-import brotli from "brotli-size";
 import terser from "terser";
+
+const brotli = require("brotli-size");
 
 function render(opt, outputOptions, info) {
 	const primaryColor = opt.theme === "dark" ? "green" : "black";
