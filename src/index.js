@@ -1,7 +1,7 @@
 import fileSize from "filesize";
 import boxen from "boxen";
 import colors from "colors";
-import deepAssign from "deep-assign";
+import merge from "lodash.merge";
 import gzip from "gzip-size";
 import terser from "terser";
 
@@ -37,7 +37,7 @@ export default function filesize(options = {}, env) {
 		showMinifiedSize: true
 	};
 
-	let opts = deepAssign({}, defaultOptions, options);
+	let opts = merge({}, defaultOptions, options);
 	if (options.render) {
 		opts.render = options.render;
 	}
