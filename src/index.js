@@ -76,7 +76,15 @@ export default function filesize(options = {}, env) {
 		generateBundle(outputOptions, bundle, isWrite) {
 			Object.keys(bundle)
 				.map(fileName => bundle[fileName])
-				.filter(currentBundle => !currentBundle.isAsset)
+				.filter(currentBundle => {
+					if (
+						currentBundle.hasOwnProperty("type") &&
+						currentBundle.type !== "asset"
+					) {
+						return true;
+					}
+					return !currentBundle.isAsset;
+				})
 				.forEach((currentBundle) => {
 					console.log(getData(outputOptions, currentBundle))
 				});
