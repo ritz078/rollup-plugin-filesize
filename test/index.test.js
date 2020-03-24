@@ -4,8 +4,8 @@ import filesize from '../src';
 const x = filesize({}, "test");
 
 const bundle = {
-  fileName: 'bundled-file.js',
-  code: 'function add(first, second) { return first + second; }',
+	fileName: 'bundled-file.js',
+	code: 'function add(first, second) { return first + second; }',
 };
 
 test('fileSize should return a string', t => {
