@@ -77,11 +77,8 @@ export default function filesize(options = {}, env) {
 			Object.keys(bundle)
 				.map(fileName => bundle[fileName])
 				.filter(currentBundle => {
-					if (
-						currentBundle.hasOwnProperty("type") &&
-						currentBundle.type !== "asset"
-					) {
-						return true;
+					if (currentBundle.hasOwnProperty("type")) {
+						return currentBundle.type !== "asset";
 					}
 					return !currentBundle.isAsset;
 				})
