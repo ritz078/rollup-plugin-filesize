@@ -15,9 +15,9 @@ function render(opt, outputOptions, info) {
 	const value = colors[secondaryColor];
 
 	const values = [
-    ...(outputOptions.file ?
-      [`${title("Destination: ")}${value(outputOptions.file)}`] :
-      (info.fileName ? [`${title("Bundle Name: ")} ${value(info.fileName)}`] : [])),
+		...(outputOptions.file ?
+			[`${title("Destination: ")}${value(outputOptions.file)}`] :
+			(info.fileName ? [`${title("Bundle Name: ")} ${value(info.fileName)}`] : [])),
 		...[`${title("Bundle Size: ")} ${value(info.bundleSize)}`],
 		...(info.minSize ? [`${title("Minified Size: ")} ${value(info.minSize)}`] : []),
 		...(info.gzipSize ? [`${title("Gzipped Size: ")} ${value(info.gzipSize)}`] : []),
@@ -43,10 +43,10 @@ export default function filesize(options = {}, env) {
 	}
 
 	const getData = function(outputOptions, bundle) {
-    const { code, fileName } = bundle;
-    const info = {};
+	const { code, fileName } = bundle;
+	const info = {};
 
-    info.fileName = fileName;
+	info.fileName = fileName;
 
 		info.bundleSize = fileSize(Buffer.byteLength(code), opts.format);
 
@@ -76,7 +76,12 @@ export default function filesize(options = {}, env) {
 		generateBundle(outputOptions, bundle, isWrite) {
 			Object.keys(bundle)
 				.map(fileName => bundle[fileName])
-				.filter(currentBundle => !currentBundle.isAsset)
+				.filter(currentBundle => {
+					if (currentBundle.hasOwnProperty("type")) {
+						return currentBundle.type !== "asset";
+					}
+					return !currentBundle.isAsset;
+				})
 				.forEach((currentBundle) => {
 					console.log(getData(outputOptions, currentBundle))
 				});
