@@ -7,6 +7,7 @@ export default {
 	plugins: [
 		babel({
 			babelrc: false,
+			plugins: ["transform-async-to-promises"],
 			presets: ["@babel/preset-env"]
 		}),
 		filesize()
