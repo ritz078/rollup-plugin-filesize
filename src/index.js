@@ -1,15 +1,15 @@
+import { readFile as origReadFile } from "fs";
+import { promisify } from "util";
+
 import fileSize from "filesize";
 import boxen from "boxen";
 import colors from "colors";
 import merge from "lodash.merge";
 import gzip from "gzip-size";
 import terser from "terser";
+import brotli from "brotli-size";
 
-const { readFile: origReadFile } = require("fs");
-const { promisify } = require("util");
 const readFile = promisify(origReadFile);
-
-const brotli = require("brotli-size");
 
 async function render(opt, outputOptions, info) {
 	const primaryColor = opt.theme === "dark" ? "green" : "black";
@@ -68,6 +68,7 @@ export default function filesize(options = {}, env) {
 		format: {},
 		theme: "dark",
 		render: render,
+		postRender: null,
 		showBeforeSizes: false,
 		showGzippedSize: true,
 		showBrotliSize: false,
@@ -132,7 +133,13 @@ export default function filesize(options = {}, env) {
 			}
 		}
 
-		return opts.render(opts, outputOptions, info);
+		const rendered = opts.render(opts, outputOptions, info);
+
+		if (opts.postRender) {
+			await opts.postRender(opts, outputOptions, info);
+		}
+
+		return rendered;
 	};
 
 	if (env === "test") {
