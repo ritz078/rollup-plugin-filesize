@@ -3,7 +3,7 @@
   "version": "7.0.0",
   "description": "A rollup plugin to show filesize in the cli",
   "main": "dist/index.js",
-  "jsnext:main": "src/index.js",
+  "module": "src/index.js",
   "files": [
     "src",
     "dist",
@@ -24,6 +24,7 @@
     "rollup-plugin"
   ],
   "author": "Ritesh Kumar",
+  "contributors": [],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/ritz078/rollup-plugin-filesize/issues"
