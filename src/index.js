@@ -68,6 +68,7 @@ export default function filesize(options = {}, env) {
 		format: {},
 		theme: "dark",
 		render: render,
+		showBeforeSizes: false,
 		showGzippedSize: true,
 		showBrotliSize: false,
 		showMinifiedSize: true
@@ -83,13 +84,15 @@ export default function filesize(options = {}, env) {
 		const info = {};
 
 		let codeBefore;
-		try {
-			codeBefore = await readFile(
-				outputOptions.file || outputOptions.dest,
-				"utf8"
-			);
-		} catch (err) {
-			// File might not exist
+		if (opts.showBeforeSizes) {
+			try {
+				codeBefore = await readFile(
+					outputOptions.file || outputOptions.dest,
+					"utf8"
+				);
+			} catch (err) {
+				// File might not exist
+			}
 		}
 
 		info.fileName = fileName;
