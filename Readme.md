@@ -64,6 +64,23 @@ filesize({
 })
 ```
 
+#### reporter
+type : `function`
+
+After rendering occurs, you may wish to pass on the collected file data,
+e.g., to build a badge for filesizes (as does [filesize-badger](https://github.com/brettz9/filesize-badger)).
+
+You can use `reporter` to do so:
+
+```js
+filesize({
+	reporter : function (options, bundle, { minSize, gzipSize, brotliSize, bundleSize }){
+		// If a promise is returned, it will be awaited before rendering.
+		return promise;
+	}
+})
+```
+
 #### theme
 type: `string`
 
@@ -77,5 +94,3 @@ choose based on your terminal theme.
 
 ## License
 MIT
-
-

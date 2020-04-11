@@ -3,7 +3,7 @@ import filesize from "./src/index";
 import pkg from "./package.json";
 
 export default {
-	external: Object.keys(pkg.dependencies),
+	external: ["fs", "util", ...Object.keys(pkg.dependencies)],
 	plugins: [
 		babel({
 			babelrc: false,
