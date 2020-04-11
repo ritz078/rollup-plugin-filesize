@@ -68,7 +68,7 @@ export default function filesize(options = {}, env) {
 		format: {},
 		theme: "dark",
 		render: render,
-		postRender: null,
+		reporter: null,
 		showBeforeSizes: false,
 		showGzippedSize: true,
 		showBrotliSize: false,
@@ -135,8 +135,8 @@ export default function filesize(options = {}, env) {
 
 		const rendered = opts.render(opts, outputOptions, info);
 
-		if (opts.postRender) {
-			await opts.postRender(opts, outputOptions, info);
+		if (opts.reporter) {
+			await opts.reporter(opts, outputOptions, info);
 		}
 
 		return rendered;
