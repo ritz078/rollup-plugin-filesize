@@ -5,9 +5,13 @@ import merge from "lodash.merge";
 import gzip from "gzip-size";
 import terser from "terser";
 
+const { readFile: origReadFile } = require("fs");
+const { promisify } = require("util");
+const readFile = promisify(origReadFile);
+
 const brotli = require("brotli-size");
 
-function render(opt, outputOptions, info) {
+async function render(opt, outputOptions, info) {
 	const primaryColor = opt.theme === "dark" ? "green" : "black";
 	const secondaryColor = opt.theme === "dark" ? "yellow" : "blue";
 
@@ -15,13 +19,45 @@ function render(opt, outputOptions, info) {
 	const value = colors[secondaryColor];
 
 	const values = [
-		...(outputOptions.file ?
-			[`${title("Destination: ")}${value(outputOptions.file)}`] :
-			(info.fileName ? [`${title("Bundle Name: ")} ${value(info.fileName)}`] : [])),
-		...[`${title("Bundle Size: ")} ${value(info.bundleSize)}`],
-		...(info.minSize ? [`${title("Minified Size: ")} ${value(info.minSize)}`] : []),
-		...(info.gzipSize ? [`${title("Gzipped Size: ")} ${value(info.gzipSize)}`] : []),
-		...(info.brotliSize ? [`${title("Brotli size: ")}${value(info.brotliSize)}`] : [])
+		...(outputOptions.file
+			? [`${title("Destination: ")}${value(outputOptions.file)}`]
+			: info.fileName
+			? [`${title("Bundle Name: ")} ${value(info.fileName)}`]
+			: []),
+		...(info.bundleSizeBefore
+			? [
+					`${title("Bundle Size: ")} ${value(info.bundleSize)} (was ${value(
+						info.bundleSizeBefore
+					)})`
+			  ]
+			: [`${title("Bundle Size: ")} ${value(info.bundleSize)}`]),
+		...(info.minSize
+			? info.minSizeBefore
+				? [
+						`${title("Minified Size: ")} ${value(info.minSize)} (was ${value(
+							info.minSizeBefore
+						)})`
+				  ]
+				: [`${title("Minified Size: ")} ${value(info.minSize)}`]
+			: []),
+		...(info.gzipSize
+			? info.gzipSizeBefore
+				? [
+						`${title("Gzipped Size: ")} ${value(info.gzipSize)} (was ${value(
+							info.gzipSizeBefore
+						)})`
+				  ]
+				: [`${title("Gzipped Size: ")} ${value(info.gzipSize)}`]
+			: []),
+		...(info.brotliSize
+			? info.brotliSizeBefore
+				? [
+						`${title("Brotli size: ")}${value(info.brotliSize)} (was ${value(
+							info.brotliSizeBefore
+						)})`
+				  ]
+				: [`${title("Brotli size: ")}${value(info.brotliSize)}`]
+			: [])
 	];
 
 	return boxen(values.join("\n"), { padding: 1 });
@@ -32,6 +68,7 @@ export default function filesize(options = {}, env) {
 		format: {},
 		theme: "dark",
 		render: render,
+		showBeforeSizes: false,
 		showGzippedSize: true,
 		showBrotliSize: false,
 		showMinifiedSize: true
@@ -42,11 +79,23 @@ export default function filesize(options = {}, env) {
 		opts.render = options.render;
 	}
 
-	const getData = function(outputOptions, bundle) {
-	const { code, fileName } = bundle;
-	const info = {};
+	const getData = async function(outputOptions, bundle) {
+		const { code, fileName } = bundle;
+		const info = {};
 
-	info.fileName = fileName;
+		let codeBefore;
+		if (opts.showBeforeSizes) {
+			try {
+				codeBefore = await readFile(
+					outputOptions.file || outputOptions.dest,
+					"utf8"
+				);
+			} catch (err) {
+				// File might not exist
+			}
+		}
+
+		info.fileName = fileName;
 
 		info.bundleSize = fileSize(Buffer.byteLength(code), opts.format);
 
@@ -64,6 +113,25 @@ export default function filesize(options = {}, env) {
 				: "";
 		}
 
+		if (codeBefore) {
+			info.bundleSizeBefore = fileSize(
+				Buffer.byteLength(codeBefore),
+				opts.format
+			);
+			info.brotliSizeBefore = opts.showBrotliSize
+				? fileSize(brotli.sync(codeBefore), opts.format)
+				: "";
+			if (opts.showMinifiedSize || opts.showGzippedSize) {
+				const minifiedCode = terser.minify(codeBefore).code;
+				info.minSizeBefore = opts.showMinifiedSize
+					? fileSize(minifiedCode.length, opts.format)
+					: "";
+				info.gzipSizeBefore = opts.showGzippedSize
+					? fileSize(gzip.sync(minifiedCode), opts.format)
+					: "";
+			}
+		}
+
 		return opts.render(opts, outputOptions, info);
 	};
 
@@ -73,18 +141,23 @@ export default function filesize(options = {}, env) {
 
 	return {
 		name: "filesize",
-		generateBundle(outputOptions, bundle, isWrite) {
-			Object.keys(bundle)
-				.map(fileName => bundle[fileName])
-				.filter(currentBundle => {
-					if (currentBundle.hasOwnProperty("type")) {
-						return currentBundle.type !== "asset";
-					}
-					return !currentBundle.isAsset;
-				})
-				.forEach((currentBundle) => {
-					console.log(getData(outputOptions, currentBundle))
-				});
+		async generateBundle(outputOptions, bundle /* , isWrite */) {
+			const dataStrs = await Promise.all(
+				Object.keys(bundle)
+					.map(fileName => bundle[fileName])
+					.filter(currentBundle => {
+						if ({}.hasOwnProperty.call(currentBundle, "type")) {
+							return currentBundle.type !== "asset";
+						}
+						return !currentBundle.isAsset;
+					})
+					.map(currentBundle => {
+						return getData(outputOptions, currentBundle);
+					})
+			);
+			dataStrs.forEach(str => {
+				console.log(str);
+			});
 		}
 	};
 }

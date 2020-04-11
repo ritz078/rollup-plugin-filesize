@@ -16,6 +16,9 @@
     "prepublish": "npm run test",
     "prebuild": "rm -rf dist/*"
   },
+  "engines": {
+    "node": ">=8.0.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ritz078/rollup-plugin-filesize.git"
@@ -44,11 +47,13 @@
     "@babel/preset-env": "^7.5.5",
     "@babel/register": "^7.5.5",
     "ava": "^2.2.0",
+    "babel-plugin-transform-async-to-promises": "^0.8.15",
     "babel-register": "^6.26.0",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.1",
     "eslint-plugin-prettier": "^3.1.2",
     "prettier": "^1.18.2",
+    "regenerator-runtime": "^0.13.5",
     "rollup": "^1.19.4",
     "rollup-plugin-babel": "^4.3.3"
   },
