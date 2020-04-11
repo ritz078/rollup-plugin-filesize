@@ -6,22 +6,22 @@ const x = filesize({}, "test");
 
 const bundle = {
 	fileName: "bundled-file.js",
-	code: "function add(first, second) { return first + second; }"
+	code: "function add(first, second) { return first + second; }",
 };
 
-test("fileSize should return a string", async t => {
+test("fileSize should return a string", async (t) => {
 	t.is(typeof (await x({ dest: "abc.js" }, bundle)), "string");
 });
 
-test("fileSize should return correct string", async t => {
+test("fileSize should return correct string", async (t) => {
 	t.true((await x({ dest: "abc.js" }, bundle)).indexOf("54") >= 0);
 });
 
-test("fileSize should apply correct template", async t => {
+test("fileSize should apply correct template", async (t) => {
 	const options = {
-		render: function(opts, bundle, { gzipSize }) {
+		render: function (opts, bundle, { gzipSize }) {
 			return gzipSize;
-		}
+		},
 	};
 
 	const z = filesize(options, "test");
@@ -30,12 +30,12 @@ test("fileSize should apply correct template", async t => {
 	t.is(await z({ dest: "abc.js" }, bundle), expected);
 });
 
-test("fileSize should report size to postRender", async t => {
+test("fileSize should report size to postRender", async (t) => {
 	let size;
 	const options = {
-		postRender: function(opts, bundle, { gzipSize }) {
+		postRender: function (opts, bundle, { gzipSize }) {
 			size = gzipSize;
-		}
+		},
 	};
 
 	const z = filesize(options, "test");
