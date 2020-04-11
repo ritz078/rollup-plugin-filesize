@@ -28,7 +28,7 @@ async function render(opt, outputOptions, info) {
 			? [
 					`${title("Bundle Size: ")} ${value(info.bundleSize)} (was ${value(
 						info.bundleSizeBefore
-					)})`
+					)})`,
 			  ]
 			: [`${title("Bundle Size: ")} ${value(info.bundleSize)}`]),
 		...(info.minSize
@@ -36,7 +36,7 @@ async function render(opt, outputOptions, info) {
 				? [
 						`${title("Minified Size: ")} ${value(info.minSize)} (was ${value(
 							info.minSizeBefore
-						)})`
+						)})`,
 				  ]
 				: [`${title("Minified Size: ")} ${value(info.minSize)}`]
 			: []),
@@ -45,7 +45,7 @@ async function render(opt, outputOptions, info) {
 				? [
 						`${title("Gzipped Size: ")} ${value(info.gzipSize)} (was ${value(
 							info.gzipSizeBefore
-						)})`
+						)})`,
 				  ]
 				: [`${title("Gzipped Size: ")} ${value(info.gzipSize)}`]
 			: []),
@@ -54,10 +54,10 @@ async function render(opt, outputOptions, info) {
 				? [
 						`${title("Brotli size: ")}${value(info.brotliSize)} (was ${value(
 							info.brotliSizeBefore
-						)})`
+						)})`,
 				  ]
 				: [`${title("Brotli size: ")}${value(info.brotliSize)}`]
-			: [])
+			: []),
 	];
 
 	return boxen(values.join("\n"), { padding: 1 });
@@ -72,7 +72,7 @@ export default function filesize(options = {}, env) {
 		showBeforeSizes: false,
 		showGzippedSize: true,
 		showBrotliSize: false,
-		showMinifiedSize: true
+		showMinifiedSize: true,
 	};
 
 	let opts = merge({}, defaultOptions, options);
@@ -80,7 +80,7 @@ export default function filesize(options = {}, env) {
 		opts.render = options.render;
 	}
 
-	const getData = async function(outputOptions, bundle) {
+	const getData = async function (outputOptions, bundle) {
 		const { code, fileName } = bundle;
 		const info = {};
 
@@ -151,20 +151,20 @@ export default function filesize(options = {}, env) {
 		async generateBundle(outputOptions, bundle /* , isWrite */) {
 			const dataStrs = await Promise.all(
 				Object.keys(bundle)
-					.map(fileName => bundle[fileName])
-					.filter(currentBundle => {
+					.map((fileName) => bundle[fileName])
+					.filter((currentBundle) => {
 						if ({}.hasOwnProperty.call(currentBundle, "type")) {
 							return currentBundle.type !== "asset";
 						}
 						return !currentBundle.isAsset;
 					})
-					.map(currentBundle => {
+					.map((currentBundle) => {
 						return getData(outputOptions, currentBundle);
 					})
 			);
-			dataStrs.forEach(str => {
+			dataStrs.forEach((str) => {
 				console.log(str);
 			});
-		}
+		},
 	};
 }

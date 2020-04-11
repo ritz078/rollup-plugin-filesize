@@ -8,13 +8,13 @@ export default {
 		babel({
 			babelrc: false,
 			plugins: ["transform-async-to-promises"],
-			presets: ["@babel/preset-env"]
+			presets: ["@babel/preset-env"],
 		}),
-		filesize()
+		filesize(),
 	],
 	input: "src/index.js",
 	output: {
 		file: "dist/index.js",
-		format: "cjs"
-	}
+		format: "cjs",
+	},
 };
