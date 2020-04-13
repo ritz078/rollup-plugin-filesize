@@ -1,6 +1,5 @@
-import "regenerator-runtime/runtime.js";
 import test from "ava";
-import filesize from "../src";
+import filesize from "../src/index.js";
 
 const x = filesize({}, "test");
 
@@ -19,9 +18,11 @@ test("fileSize should return correct string", async (t) => {
 
 test("fileSize should apply correct template", async (t) => {
 	const options = {
-		render: function (opts, bundle, { gzipSize }) {
-			return gzipSize;
-		},
+		reporter: [
+			function (opts, bundle, { gzipSize }) {
+				return gzipSize;
+			},
+		],
 	};
 
 	const z = filesize(options, "test");
@@ -30,12 +31,14 @@ test("fileSize should apply correct template", async (t) => {
 	t.is(await z({ dest: "abc.js" }, bundle), expected);
 });
 
-test("fileSize should report size to reporter", async (t) => {
+test("fileSize should report size to reporters", async (t) => {
 	let size;
 	const options = {
-		reporter: function (opts, bundle, { gzipSize }) {
-			size = gzipSize;
-		},
+		reporter: [
+			function (opts, bundle, { gzipSize }) {
+				size = gzipSize;
+			},
+		],
 	};
 
 	const z = filesize(options, "test");
