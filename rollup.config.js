@@ -1,10 +1,16 @@
-const babel = require("rollup-plugin-babel");
-const filesize = require("./dist/index.js");
-const pkg = require("./package.json");
+import babel from "rollup-plugin-babel";
+import pkg from "./package.json";
 
 const reporters = ["boxen"];
 
-module.exports = [
+// We can't point to ESM source here due to this pre-Node13 config (even if
+//  switched to the expected .mjs extension), being transpiled and then executed,
+//  causing `import.meta.url` (which we use to discover the relative reporter path)
+//  to reflect the rollup config file path instead of source (or dist).
+// See discussion at https://github.com/rollup/rollup/pull/3445
+const filesize = require("./dist/index.js");
+
+export default [
 	{
 		external: ["path", "fs", "util", ...Object.keys(pkg.dependencies)],
 		plugins: [
