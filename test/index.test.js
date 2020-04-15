@@ -9,11 +9,15 @@ const bundle = {
 };
 
 test("fileSize should return a string", async (t) => {
+	t.is(typeof (await x({ file: "abc.js" }, bundle)), "string");
+});
+
+test("fileSize should return a string (with deprecated `dest`)", async (t) => {
 	t.is(typeof (await x({ dest: "abc.js" }, bundle)), "string");
 });
 
 test("fileSize should return correct string", async (t) => {
-	t.true((await x({ dest: "abc.js" }, bundle)).indexOf("54") >= 0);
+	t.true((await x({ file: "abc.js" }, bundle)).indexOf("54") >= 0);
 });
 
 test("fileSize should apply correct template", async (t) => {
@@ -27,8 +31,8 @@ test("fileSize should apply correct template", async (t) => {
 
 	const z = filesize(options, "test");
 	const expected = "49 B";
-	console.log(await z({ dest: "abc.js" }, bundle));
-	t.is(await z({ dest: "abc.js" }, bundle), expected);
+	console.log(await z({ file: "abc.js" }, bundle));
+	t.is(await z({ file: "abc.js" }, bundle), expected);
 });
 
 test("fileSize should report size to reporters", async (t) => {
@@ -43,6 +47,6 @@ test("fileSize should report size to reporters", async (t) => {
 
 	const z = filesize(options, "test");
 	const expected = "49 B";
-	console.log(await z({ dest: "abc.js" }, bundle));
+	console.log(await z({ file: "abc.js" }, bundle));
 	t.is(size, expected);
 });
