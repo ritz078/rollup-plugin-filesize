@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "lint": "eslint .",
-    "test": "ava test/index.test.js",
+    "test": "nyc ava test/index.test.js",
     "pretest": "rollup -c",
     "prepublish": "npm run test",
     "prebuild": "rm -rf dist/*"
@@ -53,6 +53,7 @@
     "eslint-config-prettier": "^6.10.1",
     "eslint-plugin-prettier": "^3.1.3",
     "esm": "^3.2.25",
+    "nyc": "^15.0.1",
     "prettier": "^2.0.4",
     "rollup": "^2.6.1",
     "rollup-plugin-babel": "^4.4.0"
