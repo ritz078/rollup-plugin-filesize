@@ -1,6 +1,6 @@
 import { readFile as origReadFile } from "fs";
 import { promisify } from "util";
-import { dirname } from "path";
+import { dirname, resolve as pathResolve } from "path";
 
 import fileSize from "filesize";
 import gzip from "gzip-size";
@@ -39,7 +39,9 @@ export default function filesize(options = {}, env) {
 
 		info.bundleSize = fileSize(Buffer.byteLength(code), format);
 
-		info.brotliSize = showBrotliSize ? fileSize(brotli.sync(code), format) : "";
+		info.brotliSize = showBrotliSize
+			? fileSize(await brotli(code), format)
+			: "";
 
 		if (showMinifiedSize || showGzippedSize) {
 			const minifiedCode = terser.minify(code).code;
@@ -54,7 +56,7 @@ export default function filesize(options = {}, env) {
 		if (codeBefore) {
 			info.bundleSizeBefore = fileSize(Buffer.byteLength(codeBefore), format);
 			info.brotliSizeBefore = showBrotliSize
-				? fileSize(brotli.sync(codeBefore), format)
+				? fileSize(await brotli(codeBefore), format)
 				: "";
 			if (showMinifiedSize || showGzippedSize) {
 				const minifiedCode = terser.minify(codeBefore).code;
@@ -67,21 +69,28 @@ export default function filesize(options = {}, env) {
 			}
 		}
 
-		const reporters = options.reporter || ["boxen"];
+		const reporters = options.reporter
+			? Array.isArray(options.reporter)
+				? options.reporter
+				: [options.reporter]
+			: ["boxen"];
 
 		return (
 			await Promise.all(
 				reporters.map(async (reporter) => {
 					if (typeof reporter === "string") {
+						let p;
 						if (reporter === "boxen") {
-							reporter = "/reporters/boxen.js";
+							p = import(
+								dirname(new URL(import.meta.url).pathname) +
+									"/reporters/boxen.js"
+							);
+						} else {
+							p = import(pathResolve(process.cwd(), reporter));
 						}
-						reporter = (
-							await import(
-								dirname(new URL(import.meta.url).pathname) + reporter
-							)
-						).default;
+						reporter = (await p).default;
 					}
+
 					return reporter(
 						{
 							format,
