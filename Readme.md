@@ -61,7 +61,12 @@ default : {}
 See the options [here](https://github.com/avoidwork/filesize.js)
 
 #### reporter
-type : Array of `function`'s
+
+(Note that this replaces the deprecated optional `render` function option.)
+
+type : A reporter string (currently "boxen" only), a function, or an array thereof.
+
+Defaults to "boxen".
 
 After rendering occurs, you may wish to pass on the collected file data,
 e.g., to build a badge for filesizes (as does [filesize-badger](https://github.com/brettz9/filesize-badger)).
