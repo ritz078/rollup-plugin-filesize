@@ -3,12 +3,17 @@ import pkg from "./package.json";
 
 const reporters = ["boxen"];
 
-// We can't point to ESM source here due to this pre-Node13 config (even if
-//  switched to the expected .mjs extension), being transpiled and then executed,
-//  causing `import.meta.url` (which we use to discover the relative reporter path)
-//  to reflect the rollup config file path instead of source (or dist).
-// See discussion at https://github.com/rollup/rollup/pull/3445
-const filesize = require("./dist/index.js");
+let filesize = () => {};
+try {
+	// We can't point to ESM source here due to this pre-Node13 config (even if
+	//  switched to the expected .mjs extension), being transpiled and then executed,
+	//  causing `import.meta.url` (which we use to discover the relative reporter path)
+	//  to reflect the rollup config file path instead of source (or dist).
+	// See discussion at https://github.com/rollup/rollup/pull/3445
+	filesize = require("./dist/index.js");
+} catch (err) {
+	// We can't use the first time, with the file not yet built
+}
 
 export default [
 	{
