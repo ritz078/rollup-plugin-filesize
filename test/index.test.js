@@ -293,6 +293,19 @@ test("fileSize should apply correct template", async (t) => {
 	t.is(await z({ file: "abc.js" }, bundle), expected);
 });
 
+test("fileSize should apply correct template (using deprecated `render`)", async (t) => {
+	const options = {
+		render: function (opts, bundle, { gzipSize }) {
+			return gzipSize;
+		},
+	};
+
+	const z = filesize(options, "test");
+	const expected = "49 B";
+	console.log(await z({ file: "abc.js" }, bundle));
+	t.is(await z({ file: "abc.js" }, bundle), expected);
+});
+
 test("fileSize should report size to reporters", async (t) => {
 	let size;
 	const options = {

@@ -11,6 +11,7 @@ const readFile = promisify(origReadFile);
 
 export default function filesize(options = {}, env) {
 	let {
+		render,
 		format = {},
 		theme = "dark",
 		showBeforeSizes = false,
@@ -69,6 +70,23 @@ export default function filesize(options = {}, env) {
 			}
 		}
 
+		const opts = {
+			format,
+			theme,
+			render,
+			showBeforeSizes,
+			showGzippedSize,
+			showBrotliSize,
+			showMinifiedSize,
+		};
+
+		if (render) {
+			console.warn(
+				"`render` is now deprecated. Please use `reporter` instead."
+			);
+			return opts.render(opts, outputOptions, info);
+		}
+
 		const reporters = options.reporter
 			? Array.isArray(options.reporter)
 				? options.reporter
@@ -91,19 +109,7 @@ export default function filesize(options = {}, env) {
 						reporter = (await p).default;
 					}
 
-					return reporter(
-						{
-							format,
-							theme,
-							reporter,
-							showBeforeSizes,
-							showGzippedSize,
-							showBrotliSize,
-							showMinifiedSize,
-						},
-						outputOptions,
-						info
-					);
+					return reporter(opts, outputOptions, info);
 				})
 			)
 		).join("");
