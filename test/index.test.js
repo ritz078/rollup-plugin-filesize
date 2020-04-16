@@ -30,10 +30,10 @@ test("fileSize should apply correct template", async (t) => {
 	t.is(await z({ dest: "abc.js" }, bundle), expected);
 });
 
-test("fileSize should report size to postRender", async (t) => {
+test("fileSize should report size to reporter", async (t) => {
 	let size;
 	const options = {
-		postRender: function (opts, bundle, { gzipSize }) {
+		reporter: function (opts, bundle, { gzipSize }) {
 			size = gzipSize;
 		},
 	};
