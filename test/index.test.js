@@ -1,4 +1,5 @@
 import test from "ava";
+import colors from "colors/safe";
 import filesize from "../src/index.js";
 
 const x = filesize({}, "test");
@@ -62,25 +63,37 @@ test("fileSize should allow custom reporter", async (t) => {
 test("fileSize should apply light theme", async (t) => {
 	const getLoggingData = filesize({ theme: "light" }, "test");
 	const val = await getLoggingData({ file: "abc.js" }, bundle);
-	// 30 is for black
-	// eslint-disable-next-line no-control-regex
-	t.regex(val, /\u001b\[30m\u001b\[1mDestination:/);
 
-	// 34 is for blue
-	// eslint-disable-next-line no-control-regex
-	t.regex(val, /\u001b\[34mabc\.js/);
+	if (colors.supportsColor()) {
+		// 30 is for black
+		// eslint-disable-next-line no-control-regex
+		t.regex(val, /\u001b\[30m\u001b\[1mDestination:/);
+
+		// 34 is for blue
+		// eslint-disable-next-line no-control-regex
+		t.regex(val, /\u001b\[34mabc\.js/);
+	} else {
+		t.regex(val, /Destination:/);
+		t.regex(val, /abc\.js/);
+	}
 });
 
 test("fileSize should apply dark theme", async (t) => {
 	const getLoggingData = filesize({ theme: "dark" }, "test");
 	const val = await getLoggingData({ file: "abc.js" }, bundle);
-	// 32 is for green
-	// eslint-disable-next-line no-control-regex
-	t.regex(val, /\u001b\[32m\u001b\[1mDestination:/);
 
-	// 33 is for yellow
-	// eslint-disable-next-line no-control-regex
-	t.regex(val, /\u001b\[33mabc\.js/);
+	if (colors.supportsColor()) {
+		// 32 is for green
+		// eslint-disable-next-line no-control-regex
+		t.regex(val, /\u001b\[32m\u001b\[1mDestination:/);
+
+		// 33 is for yellow
+		// eslint-disable-next-line no-control-regex
+		t.regex(val, /\u001b\[33mabc\.js/);
+	} else {
+		t.regex(val, /Destination:/);
+		t.regex(val, /abc\.js/);
+	}
 });
 
 test("fileSize should generate a bundle", async (t) => {
@@ -138,8 +151,12 @@ test("fileSize should apply `showBeforeSizes` option", async (t) => {
 		{ file: "./test/fixtures/sample.js" },
 		bundle
 	);
-	// eslint-disable-next-line no-control-regex
-	t.regex(val, /\(was \u001b\[33m21 B/);
+	if (colors.supportsColor()) {
+		// eslint-disable-next-line no-control-regex
+		t.regex(val, /\(was \u001b\[33m21 B/);
+	} else {
+		t.regex(val, /\(was 21 B/);
+	}
 });
 
 test("fileSize should apply `showBeforeSizes` option (with deprecated `dest`)", async (t) => {
@@ -148,14 +165,22 @@ test("fileSize should apply `showBeforeSizes` option (with deprecated `dest`)", 
 		{ dest: "./test/fixtures/sample.js" },
 		bundle
 	);
-	// eslint-disable-next-line no-control-regex
-	t.regex(val, /\(was \u001b\[33m21 B/);
+	if (colors.supportsColor()) {
+		// eslint-disable-next-line no-control-regex
+		t.regex(val, /\(was \u001b\[33m21 B/);
+	} else {
+		t.regex(val, /\(was 21 B/);
+	}
 });
 
 test("fileSize should fallback to printing `fileName`", async (t) => {
 	const val = await x({}, bundle);
-	// eslint-disable-next-line no-control-regex
-	t.regex(val, /\u001b\[1mBundle Name:/);
+	if (colors.supportsColor()) {
+		// eslint-disable-next-line no-control-regex
+		t.regex(val, /\u001b\[1mBundle Name:/);
+	} else {
+		t.regex(val, /Bundle Name:/);
+	}
 });
 
 test("fileSize should avoid showing minified and gzipped sizes when disabled", async (t) => {
@@ -216,8 +241,13 @@ test("fileSize should show before Brotli size when configured", async (t) => {
 	t.regex(val, /Brotli size/);
 	t.regex(val, /Minified Size/);
 	t.regex(val, /Gzipped Size/);
-	// eslint-disable-next-line no-control-regex
-	t.regex(val, /\(was \u001b\[33m25 B/);
+
+	if (colors.supportsColor()) {
+		// eslint-disable-next-line no-control-regex
+		t.regex(val, /\(was \u001b\[33m25 B/);
+	} else {
+		t.regex(val, /\(was 25 B/);
+	}
 
 	getLoggingData = filesize(
 		{
@@ -232,8 +262,12 @@ test("fileSize should show before Brotli size when configured", async (t) => {
 	t.regex(val, /Brotli size/);
 	t.notRegex(val, /Minified Size/);
 	t.notRegex(val, /Gzipped Size/);
-	// eslint-disable-next-line no-control-regex
-	t.regex(val, /\(was \u001b\[33m25 B/);
+	if (colors.supportsColor()) {
+		// eslint-disable-next-line no-control-regex
+		t.regex(val, /\(was \u001b\[33m25 B/);
+	} else {
+		t.regex(val, /\(was 25 B/);
+	}
 
 	getLoggingData = filesize(
 		{
@@ -248,8 +282,13 @@ test("fileSize should show before Brotli size when configured", async (t) => {
 	t.regex(val, /Brotli size/);
 	t.regex(val, /Minified Size/);
 	t.notRegex(val, /Gzipped Size/);
-	// eslint-disable-next-line no-control-regex
-	t.regex(val, /\(was \u001b\[33m25 B/);
+
+	if (colors.supportsColor()) {
+		// eslint-disable-next-line no-control-regex
+		t.regex(val, /\(was \u001b\[33m25 B/);
+	} else {
+		t.regex(val, /\(was 25 B/);
+	}
 
 	getLoggingData = filesize(
 		{
@@ -264,8 +303,12 @@ test("fileSize should show before Brotli size when configured", async (t) => {
 	t.regex(val, /Brotli size/);
 	t.notRegex(val, /Minified Size/);
 	t.regex(val, /Gzipped Size/);
-	// eslint-disable-next-line no-control-regex
-	t.regex(val, /\(was \u001b\[33m25 B/);
+	if (colors.supportsColor()) {
+		// eslint-disable-next-line no-control-regex
+		t.regex(val, /\(was \u001b\[33m25 B/);
+	} else {
+		t.regex(val, /\(was 25 B/);
+	}
 });
 
 test("fileSize should fallback to printing nothing with no file info", async (t) => {

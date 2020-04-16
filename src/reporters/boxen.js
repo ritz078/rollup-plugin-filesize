@@ -1,5 +1,5 @@
 const boxen = require("boxen");
-const colors = require("colors");
+const colors = require("colors/safe");
 
 export default async function boxenReporter(opt, outputOptions, info) {
 	const primaryColor = opt.theme === "dark" ? "green" : "black";
