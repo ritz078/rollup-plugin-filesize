@@ -44,6 +44,15 @@ default: false
 
 Whether to show [Brotli](https://www.wikiwand.com/en/Brotli) size or not
 
+#### showBeforeSizes
+type: `boolean`
+default: false
+
+Whether to show a comparison between the `output.file` file size as it was
+and as it is now being written. Useful to compare size of a new release to
+the previous one (though note that if you run Rollup multiple times, this
+info will be lost, except if still in your terminal history).
+
 #### format
 type : `object`
 
