@@ -27,18 +27,21 @@ rollup({
 ## options
 
 #### showMinifiedSize
+
 type: `boolean`
 default: true
 
 Whether to show minified size or not
 
 #### showGzippedSize
+
 type: `boolean`
 default: true
 
 Whether to show Gzipped size or not
 
 #### showBrotliSize
+
 type: `boolean`
 default: false
 
@@ -54,27 +57,20 @@ the previous one (though note that if you run Rollup multiple times, this
 info will be lost, except if still in your terminal history).
 
 #### format
+
 type : `object`
 
 default : {}
 
-See the options [here](https://github.com/avoidwork/filesize.js)
-
-#### render
-type : `function`
-
-return the command that you want to log. Eg:
-
-```js
-filesize({
-	render : function (options, bundle, { minSize, gzipSize, brotliSize, bundleSize }){
-		return minSize;
-	}
-})
-```
+See the options [here](https://github.com/avoidwork/filesize.js#optional-settings)
 
 #### reporter
-type : `function`
+
+(Note that this replaces the deprecated optional `render` function option.)
+
+type : A reporter string (currently "boxen" only), a function, or an array thereof.
+
+Defaults to "boxen".
 
 After rendering occurs, you may wish to pass on the collected file data,
 e.g., to build a badge for filesizes (as does [filesize-badger](https://github.com/brettz9/filesize-badger)).
@@ -83,14 +79,17 @@ You can use `reporter` to do so:
 
 ```js
 filesize({
-	reporter : function (options, bundle, { minSize, gzipSize, brotliSize, bundleSize }){
-		// If a promise is returned, it will be awaited before rendering.
-		return promise;
-	}
-})
+	reporter: [
+		function (options, bundle, { minSize, gzipSize, brotliSize, bundleSize }) {
+			// If a promise is returned, it will be awaited before rendering.
+			return promise;
+		},
+	],
+});
 ```
 
 #### theme
+
 type: `string`
 
 default : 'dark'
@@ -99,7 +98,6 @@ options : 'dark'/'light'
 
 choose based on your terminal theme.
 
-
-
 ## License
+
 MIT

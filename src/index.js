@@ -1,91 +1,31 @@
 import { readFile as origReadFile } from "fs";
 import { promisify } from "util";
+import { dirname, resolve as pathResolve } from "path";
 
 import fileSize from "filesize";
-import boxen from "boxen";
-import colors from "colors";
-import merge from "lodash.merge";
 import gzip from "gzip-size";
 import terser from "terser";
 import brotli from "brotli-size";
 
 const readFile = promisify(origReadFile);
 
-async function render(opt, outputOptions, info) {
-	const primaryColor = opt.theme === "dark" ? "green" : "black";
-	const secondaryColor = opt.theme === "dark" ? "yellow" : "blue";
-
-	const title = colors[primaryColor].bold;
-	const value = colors[secondaryColor];
-
-	const values = [
-		...(outputOptions.file
-			? [`${title("Destination: ")}${value(outputOptions.file)}`]
-			: info.fileName
-			? [`${title("Bundle Name: ")} ${value(info.fileName)}`]
-			: []),
-		...(info.bundleSizeBefore
-			? [
-					`${title("Bundle Size: ")} ${value(info.bundleSize)} (was ${value(
-						info.bundleSizeBefore
-					)})`,
-			  ]
-			: [`${title("Bundle Size: ")} ${value(info.bundleSize)}`]),
-		...(info.minSize
-			? info.minSizeBefore
-				? [
-						`${title("Minified Size: ")} ${value(info.minSize)} (was ${value(
-							info.minSizeBefore
-						)})`,
-				  ]
-				: [`${title("Minified Size: ")} ${value(info.minSize)}`]
-			: []),
-		...(info.gzipSize
-			? info.gzipSizeBefore
-				? [
-						`${title("Gzipped Size: ")} ${value(info.gzipSize)} (was ${value(
-							info.gzipSizeBefore
-						)})`,
-				  ]
-				: [`${title("Gzipped Size: ")} ${value(info.gzipSize)}`]
-			: []),
-		...(info.brotliSize
-			? info.brotliSizeBefore
-				? [
-						`${title("Brotli size: ")}${value(info.brotliSize)} (was ${value(
-							info.brotliSizeBefore
-						)})`,
-				  ]
-				: [`${title("Brotli size: ")}${value(info.brotliSize)}`]
-			: []),
-	];
-
-	return boxen(values.join("\n"), { padding: 1 });
-}
-
 export default function filesize(options = {}, env) {
-	let defaultOptions = {
-		format: {},
-		theme: "dark",
-		render: render,
-		reporter: null,
-		showBeforeSizes: false,
-		showGzippedSize: true,
-		showBrotliSize: false,
-		showMinifiedSize: true,
-	};
+	let {
+		render,
+		format = {},
+		theme = "dark",
+		showBeforeSizes = false,
+		showGzippedSize = true,
+		showBrotliSize = false,
+		showMinifiedSize = true,
+	} = options;
 
-	let opts = merge({}, defaultOptions, options);
-	if (options.render) {
-		opts.render = options.render;
-	}
-
-	const getData = async function (outputOptions, bundle) {
+	const getLoggingData = async function (outputOptions, bundle) {
 		const { code, fileName } = bundle;
 		const info = {};
 
 		let codeBefore;
-		if (opts.showBeforeSizes) {
+		if (showBeforeSizes) {
 			try {
 				codeBefore = await readFile(
 					outputOptions.file || outputOptions.dest,
@@ -98,52 +38,85 @@ export default function filesize(options = {}, env) {
 
 		info.fileName = fileName;
 
-		info.bundleSize = fileSize(Buffer.byteLength(code), opts.format);
+		info.bundleSize = fileSize(Buffer.byteLength(code), format);
 
-		info.brotliSize = opts.showBrotliSize
-			? fileSize(brotli.sync(code), opts.format)
+		info.brotliSize = showBrotliSize
+			? fileSize(await brotli(code), format)
 			: "";
 
-		if (opts.showMinifiedSize || opts.showGzippedSize) {
+		if (showMinifiedSize || showGzippedSize) {
 			const minifiedCode = terser.minify(code).code;
-			info.minSize = opts.showMinifiedSize
-				? fileSize(minifiedCode.length, opts.format)
+			info.minSize = showMinifiedSize
+				? fileSize(minifiedCode.length, format)
 				: "";
-			info.gzipSize = opts.showGzippedSize
-				? fileSize(gzip.sync(minifiedCode), opts.format)
+			info.gzipSize = showGzippedSize
+				? fileSize(gzip.sync(minifiedCode), format)
 				: "";
 		}
 
 		if (codeBefore) {
-			info.bundleSizeBefore = fileSize(
-				Buffer.byteLength(codeBefore),
-				opts.format
-			);
-			info.brotliSizeBefore = opts.showBrotliSize
-				? fileSize(brotli.sync(codeBefore), opts.format)
+			info.bundleSizeBefore = fileSize(Buffer.byteLength(codeBefore), format);
+			info.brotliSizeBefore = showBrotliSize
+				? fileSize(await brotli(codeBefore), format)
 				: "";
-			if (opts.showMinifiedSize || opts.showGzippedSize) {
+			if (showMinifiedSize || showGzippedSize) {
 				const minifiedCode = terser.minify(codeBefore).code;
-				info.minSizeBefore = opts.showMinifiedSize
-					? fileSize(minifiedCode.length, opts.format)
+				info.minSizeBefore = showMinifiedSize
+					? fileSize(minifiedCode.length, format)
 					: "";
-				info.gzipSizeBefore = opts.showGzippedSize
-					? fileSize(gzip.sync(minifiedCode), opts.format)
+				info.gzipSizeBefore = showGzippedSize
+					? fileSize(gzip.sync(minifiedCode), format)
 					: "";
 			}
 		}
 
-		const rendered = opts.render(opts, outputOptions, info);
+		const opts = {
+			format,
+			theme,
+			render,
+			showBeforeSizes,
+			showGzippedSize,
+			showBrotliSize,
+			showMinifiedSize,
+		};
 
-		if (opts.reporter) {
-			await opts.reporter(opts, outputOptions, info);
+		if (render) {
+			console.warn(
+				"`render` is now deprecated. Please use `reporter` instead."
+			);
+			return opts.render(opts, outputOptions, info);
 		}
 
-		return rendered;
+		const reporters = options.reporter
+			? Array.isArray(options.reporter)
+				? options.reporter
+				: [options.reporter]
+			: ["boxen"];
+
+		return (
+			await Promise.all(
+				reporters.map(async (reporter) => {
+					if (typeof reporter === "string") {
+						let p;
+						if (reporter === "boxen") {
+							p = import(
+								dirname(new URL(import.meta.url).pathname) +
+									"/reporters/boxen.js"
+							);
+						} else {
+							p = import(pathResolve(process.cwd(), reporter));
+						}
+						reporter = (await p).default;
+					}
+
+					return reporter(opts, outputOptions, info);
+				})
+			)
+		).join("");
 	};
 
 	if (env === "test") {
-		return getData;
+		return getLoggingData;
 	}
 
 	return {
@@ -159,11 +132,13 @@ export default function filesize(options = {}, env) {
 						return !currentBundle.isAsset;
 					})
 					.map((currentBundle) => {
-						return getData(outputOptions, currentBundle);
+						return getLoggingData(outputOptions, currentBundle);
 					})
 			);
 			dataStrs.forEach((str) => {
-				console.log(str);
+				if (str) {
+					console.log(str);
+				}
 			});
 		},
 	};
