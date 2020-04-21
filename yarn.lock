@@ -1042,10 +1042,10 @@ astral-regex@^2.0.0:
   resolved "https://registry.yarnpkg.com/astral-regex/-/astral-regex-2.0.0.tgz#483143c567aeed4785759c0865786dc77d7d2e31"
   integrity sha512-Z7tMw1ytTXt5jqMcOP+OQteU1VuNK9Y02uuJtKQ1Sv69jXQKKg5cibLwGJow8yzZP+eAc18EmLGPal0bp36rvQ==
 
-ava@^3.7.0:
-  version "3.7.0"
-  resolved "https://registry.yarnpkg.com/ava/-/ava-3.7.0.tgz#86869f831628de31e817fe00d46b350849295092"
-  integrity sha512-SV1oqRpZ00qevETsNzcqTqaTnspJZZ1wBGOjyQzcLOMChnUF+17/RS4YiieClaV0eCFULLU/roICpJoQlNLHZw==
+ava@^3.7.1:
+  version "3.7.1"
+  resolved "https://registry.yarnpkg.com/ava/-/ava-3.7.1.tgz#7baba69820242e0efcbfb4ab2060b500ec745421"
+  integrity sha512-UX7RSenUgFPhxe866doqOJy6tQZAXAVAU4yufYeBAcnEjnS/plIcG6lE2yGIqgjk5cIMpSi+sP4f6EsornlsuA==
   dependencies:
     "@concordance/react" "^2.0.0"
     ansi-styles "^4.2.1"
