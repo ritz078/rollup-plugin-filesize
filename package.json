@@ -34,7 +34,6 @@
   },
   "homepage": "https://github.com/ritz078/rollup-plugin-filesize#readme",
   "dependencies": {
-    "babel-eslint": "^10.1.0",
     "boxen": "^4.2.0",
     "brotli-size": "4.0.0",
     "colors": "^1.4.0",
@@ -48,6 +47,7 @@
     "@babel/preset-env": "^7.9.5",
     "@babel/register": "^7.9.0",
     "ava": "^3.7.1",
+    "babel-eslint": "^10.1.0",
     "babel-register": "^6.26.0",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.1",
