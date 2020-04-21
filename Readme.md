@@ -27,18 +27,21 @@ rollup({
 ## options
 
 #### showMinifiedSize
+
 type: `boolean`
 default: true
 
 Whether to show minified size or not
 
 #### showGzippedSize
+
 type: `boolean`
 default: true
 
 Whether to show Gzipped size or not
 
 #### showBrotliSize
+
 type: `boolean`
 default: false
 
@@ -54,6 +57,7 @@ the previous one (though note that if you run Rollup multiple times, this
 info will be lost, except if still in your terminal history).
 
 #### format
+
 type : `object`
 
 default : {}
@@ -75,14 +79,17 @@ You can use `reporter` to do so:
 
 ```js
 filesize({
-	reporter : [function (options, bundle, { minSize, gzipSize, brotliSize, bundleSize }){
-		// If a promise is returned, it will be awaited before rendering.
-		return promise;
-	}]
-})
+	reporter: [
+		function (options, bundle, { minSize, gzipSize, brotliSize, bundleSize }) {
+			// If a promise is returned, it will be awaited before rendering.
+			return promise;
+		},
+	],
+});
 ```
 
 #### theme
+
 type: `string`
 
 default : 'dark'
@@ -91,7 +98,6 @@ options : 'dark'/'light'
 
 choose based on your terminal theme.
 
-
-
 ## License
+
 MIT
