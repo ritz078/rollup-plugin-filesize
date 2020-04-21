@@ -58,7 +58,7 @@ type : `object`
 
 default : {}
 
-See the options [here](https://github.com/avoidwork/filesize.js)
+See the options [here](https://github.com/avoidwork/filesize.js#optional-settings)
 
 #### reporter
 
