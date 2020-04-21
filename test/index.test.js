@@ -1,6 +1,10 @@
+import { promisify } from "util";
 import test from "ava";
+import rimRaf from "rimraf";
 import colors from "colors/safe";
 import filesize from "../src/index.js";
+
+const rimraf = promisify(rimRaf);
 
 const x = filesize({}, "test");
 
@@ -8,6 +12,10 @@ const bundle = {
 	fileName: "test/fixtures/bundled-file.js",
 	code: "function add(first, second) { return first + second; }",
 };
+
+async function removeCacheDir() {
+	return await rimraf(".cache");
+}
 
 async function getStdout(cb) {
 	const originalStdoutWrite = process.stdout.write.bind(process.stdout);
@@ -151,29 +159,79 @@ test("fileSize should generate a bundle", async (t) => {
 
 test("fileSize should apply `showBeforeSizes` option", async (t) => {
 	const getLoggingData = filesize({ showBeforeSizes: true }, "test");
-	const val = await getLoggingData(
-		{ file: "./test/fixtures/sample.js" },
-		bundle
-	);
+	const val = await getLoggingData({ file: "./dist/index.js" }, bundle);
 	if (colors.supportsColor()) {
 		// eslint-disable-next-line no-control-regex
-		t.regex(val, /\(was \u001b\[33m21 B/);
+		t.regex(val, /\(was \u001b\[33m[\d.]+ KB/);
 	} else {
-		t.regex(val, /\(was 21 B/);
+		t.regex(val, /\(was [\d.]+ KB/);
+	}
+});
+
+test('fileSize should apply `showBeforeSizes` option as "lastBuild"', async (t) => {
+	await removeCacheDir();
+
+	const getLoggingData = filesize({ showBeforeSizes: "lastBuild" }, "test");
+	const val = await getLoggingData({ file: "./dist/index.js" }, bundle);
+	if (colors.supportsColor()) {
+		// eslint-disable-next-line no-control-regex
+		t.regex(val, /\(was \u001b\[33m[\d.]+ K?B/);
+	} else {
+		t.regex(val, /\(was [\d.]+ K?B/);
+	}
+});
+
+test("fileSize should ignore before sizes with package-missing file and `showBeforeSizes: true`", async (t) => {
+	await removeCacheDir();
+
+	let getLoggingData = filesize({ showBeforeSizes: true }, "test");
+	let val = await getLoggingData({ file: "./test/fixtures/sample.js" }, bundle);
+	if (colors.supportsColor()) {
+		// eslint-disable-next-line no-control-regex
+		t.notRegex(val, /\(was /);
+	} else {
+		t.notRegex(val, /\(was /);
+	}
+
+	// Run again (without deleting cache directory) to get coverage of cache
+	getLoggingData = filesize({ showBeforeSizes: true }, "test");
+	val = await getLoggingData({ file: "./test/fixtures/sample.js" }, bundle);
+	if (colors.supportsColor()) {
+		// eslint-disable-next-line no-control-regex
+		t.notRegex(val, /\(was /);
+	} else {
+		t.notRegex(val, /\(was /);
+	}
+});
+
+test("fileSize should ignore before sizes with bad package", async (t) => {
+	await removeCacheDir();
+
+	const oldCwd = process.cwd();
+	const getLoggingData = filesize({ showBeforeSizes: true }, "test");
+
+	// Change directory without giving a chance for other tests to use
+	process.chdir("./test/fixtures");
+	const prom = getLoggingData({ file: "./sample.js" }, bundle);
+	process.chdir(oldCwd);
+	const val = await prom;
+
+	if (colors.supportsColor()) {
+		// eslint-disable-next-line no-control-regex
+		t.notRegex(val, /\(was /);
+	} else {
+		t.notRegex(val, /\(was /);
 	}
 });
 
 test("fileSize should apply `showBeforeSizes` option (with deprecated `dest`)", async (t) => {
 	const getLoggingData = filesize({ showBeforeSizes: true }, "test");
-	const val = await getLoggingData(
-		{ dest: "./test/fixtures/sample.js" },
-		bundle
-	);
+	const val = await getLoggingData({ dest: "./dist/index.js" }, bundle);
 	if (colors.supportsColor()) {
 		// eslint-disable-next-line no-control-regex
-		t.regex(val, /\(was \u001b\[33m21 B/);
+		t.regex(val, /\(was \u001b\[33m[\d.]+ KB/);
 	} else {
-		t.regex(val, /\(was 21 B/);
+		t.regex(val, /\(was [\d.]+ KB/);
 	}
 });
 
@@ -236,7 +294,7 @@ test("fileSize should show Brotli size when configured", async (t) => {
 test("fileSize should show before Brotli size when configured", async (t) => {
 	let getLoggingData = filesize(
 		{
-			showBeforeSizes: true,
+			showBeforeSizes: "lastBuild",
 			showBrotliSize: true,
 		},
 		"test"
@@ -255,7 +313,7 @@ test("fileSize should show before Brotli size when configured", async (t) => {
 
 	getLoggingData = filesize(
 		{
-			showBeforeSizes: true,
+			showBeforeSizes: "lastBuild",
 			showBrotliSize: true,
 			showMinifiedSize: false,
 			showGzippedSize: false,
@@ -275,7 +333,7 @@ test("fileSize should show before Brotli size when configured", async (t) => {
 
 	getLoggingData = filesize(
 		{
-			showBeforeSizes: true,
+			showBeforeSizes: "lastBuild",
 			showBrotliSize: true,
 			showMinifiedSize: true,
 			showGzippedSize: false,
@@ -296,7 +354,7 @@ test("fileSize should show before Brotli size when configured", async (t) => {
 
 	getLoggingData = filesize(
 		{
-			showBeforeSizes: true,
+			showBeforeSizes: "lastBuild",
 			showBrotliSize: true,
 			showMinifiedSize: false,
 			showGzippedSize: true,

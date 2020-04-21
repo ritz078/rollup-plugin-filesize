@@ -14,7 +14,7 @@
     "test": "nyc ava test/index.test.js",
     "pretest": "rollup -c",
     "prepublish": "npm run test",
-    "prebuild": "rm -rf dist/*"
+    "prebuild": "rimraf dist/*"
   },
   "engines": {
     "node": ">=8.0.0"
@@ -39,6 +39,7 @@
     "colors": "^1.4.0",
     "filesize": "^6.1.0",
     "gzip-size": "^5.1.1",
+    "pacote": "^11.1.4",
     "terser": "^4.6.11"
   },
   "devDependencies": {
@@ -46,6 +47,7 @@
     "@babel/plugin-syntax-import-meta": "^7.8.3",
     "@babel/preset-env": "^7.9.5",
     "@babel/register": "^7.9.0",
+    "@rollup/plugin-json": "^4.0.3",
     "ava": "^3.7.1",
     "babel-eslint": "^10.1.0",
     "babel-register": "^6.26.0",
@@ -55,6 +57,7 @@
     "esm": "^3.2.25",
     "nyc": "^15.0.1",
     "prettier": "^2.0.4",
+    "rimraf": "^3.0.2",
     "rollup": "^2.6.1",
     "rollup-plugin-babel": "^4.4.0"
   },
