@@ -31,6 +31,10 @@ test("fileSize should return a string", async (t) => {
 	t.is(typeof (await x({ file: "abc.js" }, bundle)), "string");
 });
 
+test("fileSize should return a string (with deprecated `dest`)", async (t) => {
+	t.is(typeof (await x({ dest: "abc.js" }, bundle)), "string");
+});
+
 test("fileSize should allow custom reporter", async (t) => {
 	const getLoggingData = filesize(
 		{
