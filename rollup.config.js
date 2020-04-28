@@ -1,3 +1,4 @@
+import json from "@rollup/plugin-json";
 import babel from "rollup-plugin-babel";
 import pkg from "./package.json";
 
@@ -19,12 +20,15 @@ export default [
 	{
 		external: ["path", "fs", "util", ...Object.keys(pkg.dependencies)],
 		plugins: [
+			json(),
 			babel({
 				babelrc: false,
 				plugins: ["@babel/plugin-syntax-import-meta"],
 				presets: [["@babel/preset-env", { targets: { node: 8 } }]],
 			}),
-			filesize(),
+			filesize({
+				showBeforeSizes: "release",
+			}),
 		],
 		input: "src/index.js",
 		output: {
@@ -40,7 +44,9 @@ export default [
 					babelrc: false,
 					presets: [["@babel/preset-env", { targets: { node: 8 } }]],
 				}),
-				filesize(),
+				filesize({
+					showBeforeSizes: "release",
+				}),
 			],
 			input: `src/reporters/${reporter}`,
 			output: {

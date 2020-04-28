@@ -1,20 +1,23 @@
-import { readFile as origReadFile } from "fs";
+import { readFile as origReadFile, existsSync } from "fs";
 import { promisify } from "util";
-import { dirname, resolve as pathResolve } from "path";
+import { dirname, resolve as pathResolve, join } from "path";
 
 import fileSize from "filesize";
 import gzip from "gzip-size";
 import terser from "terser";
 import brotli from "brotli-size";
+import pacote from "pacote";
 
 const readFile = promisify(origReadFile);
+
+const thisDirectory = dirname(new URL(import.meta.url).pathname);
 
 export default function filesize(options = {}, env) {
 	let {
 		render,
 		format = {},
 		theme = "dark",
-		showBeforeSizes = false,
+		showBeforeSizes = "none",
 		showGzippedSize = true,
 		showBrotliSize = false,
 		showMinifiedSize = true,
@@ -25,14 +28,30 @@ export default function filesize(options = {}, env) {
 		const info = {};
 
 		let codeBefore;
-		if (showBeforeSizes) {
-			try {
-				codeBefore = await readFile(
-					outputOptions.file || outputOptions.dest,
-					"utf8"
+		if (showBeforeSizes !== "none") {
+			let file = outputOptions.file || outputOptions.dest;
+			if (showBeforeSizes !== "build") {
+				const { name, version } = await import(
+					join(process.cwd(), "./package.json")
 				);
-			} catch (err) {
-				// File might not exist
+				try {
+					const output = join(thisDirectory, "../.cache");
+					if (!existsSync(output)) {
+						await pacote.extract(`${name}@${version}`, output);
+					}
+					file = join(output, file);
+				} catch (err) {
+					// Package might not exist
+					file = null;
+				}
+			}
+
+			if (file) {
+				try {
+					codeBefore = await readFile(file, "utf8");
+				} catch (err) {
+					// File might not exist
+				}
 			}
 		}
 

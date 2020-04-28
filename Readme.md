@@ -48,13 +48,24 @@ default: false
 Whether to show [Brotli](https://www.wikiwand.com/en/Brotli) size or not
 
 #### showBeforeSizes
-type: `boolean`
-default: false
 
-Whether to show a comparison between the `output.file` file size as it was
-and as it is now being written. Useful to compare size of a new release to
-the previous one (though note that if you run Rollup multiple times, this
-info will be lost, except if still in your terminal history).
+type: `"release", ``"build"`, or `"none"`
+default: `"none"`
+
+Indicates how, if any, comparisons will be shown between the
+`output.file` file size as it was and as it is now being written.
+
+If set to `"release"`, will compare the file size at present to that of
+the last npm release.
+
+If set to `"build"`, the size of the file that is now being built will
+be compared to the immediately previous build. This means that if you run
+Rollup multiple times with this option, the info on the previous package
+size will be lost (since Rollup will have overwritten your copy), so with
+this option, you will need to consult your terminal history to see what the
+file size was prior to your changes. This option may be useful if you wish
+to compare size changes incrementally as you are developing rather than
+comparing to your last release.
 
 #### format
 

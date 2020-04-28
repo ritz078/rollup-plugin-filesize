@@ -32,3 +32,6 @@ node_modules
 
 .idea
 dist
+
+# We use to gather npm packages
+.cache
