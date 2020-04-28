@@ -35,3 +35,5 @@ dist
 
 # We use to gather npm packages
 .cache
+.tool-versions
+package-lock.json
