@@ -27,7 +27,7 @@ export default [
 				presets: [["@babel/preset-env", { targets: { node: 8 } }]],
 			}),
 			filesize({
-				showBeforeSizes: true,
+				showBeforeSizes: "release",
 			}),
 		],
 		input: "src/index.js",
@@ -45,7 +45,7 @@ export default [
 					presets: [["@babel/preset-env", { targets: { node: 8 } }]],
 				}),
 				filesize({
-					showBeforeSizes: true,
+					showBeforeSizes: "release",
 				}),
 			],
 			input: `src/reporters/${reporter}`,

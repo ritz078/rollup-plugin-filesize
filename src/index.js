@@ -17,7 +17,7 @@ export default function filesize(options = {}, env) {
 		render,
 		format = {},
 		theme = "dark",
-		showBeforeSizes = false,
+		showBeforeSizes = "none",
 		showGzippedSize = true,
 		showBrotliSize = false,
 		showMinifiedSize = true,
@@ -28,9 +28,9 @@ export default function filesize(options = {}, env) {
 		const info = {};
 
 		let codeBefore;
-		if (showBeforeSizes) {
+		if (showBeforeSizes !== "none") {
 			let file = outputOptions.file || outputOptions.dest;
-			if (showBeforeSizes !== "lastBuild") {
+			if (showBeforeSizes !== "build") {
 				const { name, version } = await import(
 					join(process.cwd(), "./package.json")
 				);
