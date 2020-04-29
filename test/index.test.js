@@ -166,18 +166,14 @@ test("fileSize should apply `showBeforeSizes` option", async (t) => {
 
 	t.regex(val, /Destination:/);
 
-	// When preparing a new version number, the version won't yet
-	//  exist on npm, so this will fail (though it will otherwise pass)
-	/*
 	if (colors.supportsColor()) {
 		// eslint-disable-next-line no-control-regex
 		t.regex(val, /\(was \u001b\[33m[\d.]+ KB/);
 	} else {
 		t.regex(val, /\(was [\d.]+ KB/);
 	}
-	*/
 
-	// Should at least recreate the `.cache` folder
+	// Should recreate the `.cache` folder
 	t.is(existsSync(".cache"), true);
 });
 
@@ -245,18 +241,14 @@ test("fileSize should apply `showBeforeSizes` option (with deprecated `dest`)", 
 
 	t.regex(val, /Destination:/);
 
-	// When preparing a new version number, the version won't yet
-	//  exist on npm, so this will fail (though it will otherwise pass)
-	/*
 	if (colors.supportsColor()) {
 		// eslint-disable-next-line no-control-regex
 		t.regex(val, /\(was \u001b\[33m[\d.]+ KB/);
 	} else {
 		t.regex(val, /\(was [\d.]+ KB/);
 	}
-	*/
 
-	// Should at least recreate the `.cache` folder
+	// Should recreate the `.cache` folder
 	t.is(existsSync(".cache"), true);
 });
 

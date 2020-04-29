@@ -31,13 +31,11 @@ export default function filesize(options = {}, env) {
 		if (showBeforeSizes !== "none") {
 			let file = outputOptions.file || outputOptions.dest;
 			if (showBeforeSizes !== "build") {
-				const { name, version } = await import(
-					join(process.cwd(), "./package.json")
-				);
+				const { name } = await import(join(process.cwd(), "./package.json"));
 				try {
 					const output = join(thisDirectory, "../.cache");
 					if (!existsSync(output)) {
-						await pacote.extract(`${name}@${version}`, output);
+						await pacote.extract(`${name}@latest`, output);
 					}
 					file = join(output, file);
 				} catch (err) {
