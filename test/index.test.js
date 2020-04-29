@@ -1,3 +1,4 @@
+import { existsSync } from "fs";
 import { promisify } from "util";
 import test from "ava";
 import rimRaf from "rimraf";
@@ -158,14 +159,26 @@ test("fileSize should generate a bundle", async (t) => {
 });
 
 test("fileSize should apply `showBeforeSizes` option", async (t) => {
+	await removeCacheDir();
+
 	const getLoggingData = filesize({ showBeforeSizes: "release" }, "test");
 	const val = await getLoggingData({ file: "./dist/index.js" }, bundle);
+
+	t.regex(val, /Destination:/);
+
+	// When preparing a new version number, the version won't yet
+	//  exist on npm, so this will fail (though it will otherwise pass)
+	/*
 	if (colors.supportsColor()) {
 		// eslint-disable-next-line no-control-regex
 		t.regex(val, /\(was \u001b\[33m[\d.]+ KB/);
 	} else {
 		t.regex(val, /\(was [\d.]+ KB/);
 	}
+	*/
+
+	// Should at least recreate the `.cache` folder
+	t.is(existsSync(".cache"), true);
 });
 
 test('fileSize should apply `showBeforeSizes` option as "build"', async (t) => {
@@ -181,7 +194,7 @@ test('fileSize should apply `showBeforeSizes` option as "build"', async (t) => {
 	}
 });
 
-test('fileSize should ignore before sizes with package-missing file and `showBeforeSizes: "release"`', async (t) => {
+test('fileSize should ignore before sizes with package missing file (test files not in release) and `showBeforeSizes: "release"`', async (t) => {
 	await removeCacheDir();
 
 	let getLoggingData = filesize({ showBeforeSizes: "release" }, "test");
@@ -225,14 +238,26 @@ test("fileSize should ignore before sizes with bad package", async (t) => {
 });
 
 test("fileSize should apply `showBeforeSizes` option (with deprecated `dest`)", async (t) => {
+	await removeCacheDir();
+
 	const getLoggingData = filesize({ showBeforeSizes: "release" }, "test");
 	const val = await getLoggingData({ dest: "./dist/index.js" }, bundle);
+
+	t.regex(val, /Destination:/);
+
+	// When preparing a new version number, the version won't yet
+	//  exist on npm, so this will fail (though it will otherwise pass)
+	/*
 	if (colors.supportsColor()) {
 		// eslint-disable-next-line no-control-regex
 		t.regex(val, /\(was \u001b\[33m[\d.]+ KB/);
 	} else {
 		t.regex(val, /\(was [\d.]+ KB/);
 	}
+	*/
+
+	// Should at least recreate the `.cache` folder
+	t.is(existsSync(".cache"), true);
 });
 
 test("fileSize should fallback to printing `fileName`", async (t) => {
