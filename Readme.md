@@ -93,7 +93,14 @@ You can use `reporter` to do so:
 ```js
 filesize({
 	reporter: [
-		function (options, bundle, { minSize, gzipSize, brotliSize, bundleSize }) {
+		function (options, bundle, {
+			minSize, gzipSize, brotliSize, bundleSize,
+			fileName,
+			// "showBeforeSizes: release"
+			lastVersion,
+			// "showBeforeSizes: "release" or "showBeforeSizes": "build"
+			bundleSizeBefore, brotliSizeBefore, minSizeBefore, gzipSizeBefore
+		}) {
 			// If a promise is returned, it will be awaited before rendering.
 			return promise;
 		},
