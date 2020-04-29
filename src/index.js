@@ -1,4 +1,4 @@
-import { readFile as origReadFile, existsSync } from "fs";
+import { readFile as origReadFile } from "fs";
 import { promisify } from "util";
 import { dirname, resolve as pathResolve, join } from "path";
 
@@ -34,10 +34,16 @@ export default function filesize(options = {}, env) {
 				const { name } = await import(join(process.cwd(), "./package.json"));
 				try {
 					const output = join(thisDirectory, "../.cache");
-					if (!existsSync(output)) {
-						await pacote.extract(`${name}@latest`, output);
-					}
-					file = join(output, file);
+
+					const { resolved } = await pacote.extract(`${name}@latest`, output);
+					const idx = resolved.lastIndexOf(name);
+					const lastVersion = resolved.slice(
+						idx + name.length + 1,
+						-".tgz".length
+					);
+					info.lastVersion = lastVersion;
+
+					file = pathResolve(output, file);
 				} catch (err) {
 					// Package might not exist
 					file = null;

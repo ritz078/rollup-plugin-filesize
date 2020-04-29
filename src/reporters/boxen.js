@@ -22,7 +22,7 @@ export default async function boxenReporter(opt, outputOptions, info) {
 			? [
 					`${title("Bundle Size: ")} ${value(info.bundleSize)} (was ${value(
 						info.bundleSizeBefore
-					)})`,
+					)} in version ${info.lastVersion})`,
 			  ]
 			: [`${title("Bundle Size: ")} ${value(info.bundleSize)}`]),
 		...(info.minSize
@@ -30,7 +30,7 @@ export default async function boxenReporter(opt, outputOptions, info) {
 				? [
 						`${title("Minified Size: ")} ${value(info.minSize)} (was ${value(
 							info.minSizeBefore
-						)})`,
+						)} in version ${info.lastVersion})`,
 				  ]
 				: [`${title("Minified Size: ")} ${value(info.minSize)}`]
 			: []),
@@ -39,7 +39,7 @@ export default async function boxenReporter(opt, outputOptions, info) {
 				? [
 						`${title("Gzipped Size: ")} ${value(info.gzipSize)} (was ${value(
 							info.gzipSizeBefore
-						)})`,
+						)} in version ${info.lastVersion})`,
 				  ]
 				: [`${title("Gzipped Size: ")} ${value(info.gzipSize)}`]
 			: []),
@@ -48,7 +48,7 @@ export default async function boxenReporter(opt, outputOptions, info) {
 				? [
 						`${title("Brotli size: ")}${value(info.brotliSize)} (was ${value(
 							info.brotliSizeBefore
-						)})`,
+						)} in version ${info.lastVersion})`,
 				  ]
 				: [`${title("Brotli size: ")}${value(info.brotliSize)}`]
 			: []),

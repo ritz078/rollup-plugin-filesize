@@ -5,6 +5,8 @@ import rimRaf from "rimraf";
 import colors from "colors/safe";
 import filesize from "../src/index.js";
 
+const npmNetworkTimeout = 30000;
+
 const rimraf = promisify(rimRaf);
 
 const x = filesize({}, "test");
@@ -159,6 +161,7 @@ test("fileSize should generate a bundle", async (t) => {
 });
 
 test("fileSize should apply `showBeforeSizes` option", async (t) => {
+	t.timeout(npmNetworkTimeout); // reaching npm may take time on slower network
 	await removeCacheDir();
 
 	const getLoggingData = filesize({ showBeforeSizes: "release" }, "test");
@@ -191,6 +194,7 @@ test('fileSize should apply `showBeforeSizes` option as "build"', async (t) => {
 });
 
 test('fileSize should ignore before sizes with package missing file (test files not in release) and `showBeforeSizes: "release"`', async (t) => {
+	t.timeout(npmNetworkTimeout); // reaching npm may take time on slower network
 	await removeCacheDir();
 
 	let getLoggingData = filesize({ showBeforeSizes: "release" }, "test");
@@ -201,19 +205,10 @@ test('fileSize should ignore before sizes with package missing file (test files 
 	} else {
 		t.notRegex(val, /\(was /);
 	}
-
-	// Run again (without deleting cache directory) to get coverage of cache
-	getLoggingData = filesize({ showBeforeSizes: "release" }, "test");
-	val = await getLoggingData({ file: "./test/fixtures/sample.js" }, bundle);
-	if (colors.supportsColor()) {
-		// eslint-disable-next-line no-control-regex
-		t.notRegex(val, /\(was /);
-	} else {
-		t.notRegex(val, /\(was /);
-	}
 });
 
 test("fileSize should ignore before sizes with bad package", async (t) => {
+	t.timeout(npmNetworkTimeout); // reaching npm may take time on slower network
 	await removeCacheDir();
 
 	const oldCwd = process.cwd();
@@ -234,6 +229,7 @@ test("fileSize should ignore before sizes with bad package", async (t) => {
 });
 
 test("fileSize should apply `showBeforeSizes` option (with deprecated `dest`)", async (t) => {
+	t.timeout(npmNetworkTimeout); // reaching npm may take time on slower network
 	await removeCacheDir();
 
 	const getLoggingData = filesize({ showBeforeSizes: "release" }, "test");
