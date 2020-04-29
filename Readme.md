@@ -49,6 +49,8 @@ Whether to show [Brotli](https://www.wikiwand.com/en/Brotli) size or not
 
 #### showBeforeSizes
 
+**Note: this feature is experimental and may be changed in a future release.**
+
 type: `"release", ``"build"`, or `"none"`
 default: `"none"`
 
