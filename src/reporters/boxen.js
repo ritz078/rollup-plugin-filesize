@@ -9,8 +9,12 @@ export default async function boxenReporter(opt, outputOptions, info) {
 	const value = colors[secondaryColor];
 
 	const values = [
-		...(outputOptions.file
-			? [`${title("Destination: ")}${value(outputOptions.file)}`]
+		...(outputOptions.file || outputOptions.dest
+			? [
+					`${title("Destination: ")}${value(
+						outputOptions.file || outputOptions.dest
+					)}`,
+			  ]
 			: info.fileName
 			? [`${title("Bundle Name: ")} ${value(info.fileName)}`]
 			: []),
