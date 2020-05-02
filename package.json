@@ -7,7 +7,9 @@
   "files": [
     "src",
     "dist",
-    "README"
+    "README",
+    "!.DS_Store",
+    "!.nyc_output"
   ],
   "scripts": {
     "lint": "eslint .",
