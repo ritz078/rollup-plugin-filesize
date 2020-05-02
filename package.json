@@ -12,9 +12,9 @@
   "scripts": {
     "lint": "eslint .",
     "test": "nyc ava test/index.test.js",
-    "pretest": "rollup -c",
-    "prepublishOnly": "npm run test",
-    "prebuild": "rimraf dist/*"
+    "remove-dist": "rimraf dist/*",
+    "pretest": "npm run remove-dist && rollup -c",
+    "prepare": "npm run test"
   },
   "engines": {
     "node": ">=8.0.0"
