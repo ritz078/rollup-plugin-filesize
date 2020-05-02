@@ -10,9 +10,22 @@ import pacote from "pacote";
 
 const readFile = promisify(origReadFile);
 
-const thisDirectory = dirname(new URL(import.meta.url).pathname);
-
 const isWindows = process.platform === "win32";
+
+function fixWindowsPath(path) {
+	return path.slice(
+		// istanbul ignore next
+		isWindows ? 1 : 0
+	);
+}
+
+// Node should be ok with this, but transpiling
+//  to `require` doesn't work, so detect Windows
+//  to remove slash instead
+// "file://" +
+const thisDirectory = fixWindowsPath(
+	dirname(new URL(import.meta.url).pathname)
+);
 
 export default function filesize(options = {}, env) {
 	let {
@@ -33,7 +46,9 @@ export default function filesize(options = {}, env) {
 		if (showBeforeSizes !== "none") {
 			let file = outputOptions.file || outputOptions.dest;
 			if (showBeforeSizes !== "build") {
-				const { name } = await import(join(process.cwd(), "./package.json"));
+				const { name } = await import(
+					fixWindowsPath(join(process.cwd(), "./package.json"))
+				);
 				try {
 					const output = join(thisDirectory, "../.cache");
 
@@ -124,27 +139,9 @@ export default function filesize(options = {}, env) {
 					if (typeof reporter === "string") {
 						let p;
 						if (reporter === "boxen") {
-							p = import(
-								// Node should be ok with this, but transpiling
-								//  to `require` doesn't work, so detect Windows
-								//  to remove slash instead
-								// "file://" +
-								dirname(new URL(import.meta.url).pathname).slice(
-									// istanbul ignore next
-									isWindows ? 1 : 0
-								) + "/reporters/boxen.js"
-							);
+							p = import(thisDirectory + "/reporters/boxen.js");
 						} else {
-							p = import(
-								// Node should be ok with this, but transpiling
-								//  to `require` doesn't work, so detect Windows
-								//  to remove slash instead
-								// "file://" +
-								pathResolve(process.cwd(), reporter).slice(
-									// istanbul ignore next
-									isWindows ? 1 : 0
-								)
-							);
+							p = import(fixWindowsPath(pathResolve(process.cwd(), reporter)));
 						}
 						reporter = (await p).default;
 					}
