@@ -12,6 +12,8 @@ const readFile = promisify(origReadFile);
 
 const thisDirectory = dirname(new URL(import.meta.url).pathname);
 
+const isWindows = process.platform === "win32";
+
 export default function filesize(options = {}, env) {
 	let {
 		render,
@@ -123,11 +125,26 @@ export default function filesize(options = {}, env) {
 						let p;
 						if (reporter === "boxen") {
 							p = import(
-								dirname(new URL(import.meta.url).pathname) +
-									"/reporters/boxen.js"
+								// Node should be ok with this, but transpiling
+								//  to `require` doesn't work, so detect Windows
+								//  to remove slash instead
+								// "file://" +
+								dirname(new URL(import.meta.url).pathname).slice(
+									// istanbul ignore next
+									isWindows ? 1 : 0
+								) + "/reporters/boxen.js"
 							);
 						} else {
-							p = import(pathResolve(process.cwd(), reporter));
+							p = import(
+								// Node should be ok with this, but transpiling
+								//  to `require` doesn't work, so detect Windows
+								//  to remove slash instead
+								// "file://" +
+								pathResolve(process.cwd(), reporter).slice(
+									// istanbul ignore next
+									isWindows ? 1 : 0
+								)
+							);
 						}
 						reporter = (await p).default;
 					}
