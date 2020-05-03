@@ -15,8 +15,8 @@
     "lint": "eslint .",
     "test": "nyc ava test/index.test.js",
     "remove-dist": "rimraf dist/*",
-    "pretest": "npm run remove-dist && rollup -c",
-    "prepare": "npm run test"
+    "pretest": "rollup -c",
+    "prepare": "npm run remove-dist && npm run test"
   },
   "engines": {
     "node": ">=10.0.0"
