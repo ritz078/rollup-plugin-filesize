@@ -24,7 +24,7 @@ export default [
 			babel({
 				babelrc: false,
 				plugins: ["@babel/plugin-syntax-import-meta"],
-				presets: [["@babel/preset-env", { targets: { node: 8 } }]],
+				presets: [["@babel/preset-env", { targets: { node: 10 } }]],
 			}),
 			filesize({
 				showBeforeSizes: "release",
@@ -42,7 +42,7 @@ export default [
 			plugins: [
 				babel({
 					babelrc: false,
-					presets: [["@babel/preset-env", { targets: { node: 8 } }]],
+					presets: [["@babel/preset-env", { targets: { node: 10 } }]],
 				}),
 				filesize({
 					showBeforeSizes: "release",
