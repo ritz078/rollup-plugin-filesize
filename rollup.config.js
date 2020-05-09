@@ -23,6 +23,7 @@ export default [
 			json(),
 			babel({
 				babelrc: false,
+				babelHelpers: "bundled",
 				plugins: ["@babel/plugin-syntax-import-meta"],
 				presets: [["@babel/preset-env", { targets: { node: 10 } }]],
 			}),
@@ -42,6 +43,7 @@ export default [
 			plugins: [
 				babel({
 					babelrc: false,
+					babelHelpers: "bundled",
 					presets: [["@babel/preset-env", { targets: { node: 10 } }]],
 				}),
 				filesize({
