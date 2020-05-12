@@ -180,11 +180,42 @@ test("fileSize should apply `showBeforeSizes` option", async (t) => {
 	t.is(existsSync(".cache"), true);
 });
 
+test("fileSize should apply `showBeforeSizes` option with Brotli size", async (t) => {
+	t.timeout(npmNetworkTimeout); // reaching npm may take time on slower network
+	await removeCacheDir();
+
+	const getLoggingData = filesize(
+		{
+			showBeforeSizes: "release",
+			showBrotliSize: true,
+		},
+		"test"
+	);
+	const val = await getLoggingData({ file: "./dist/index.js" }, bundle);
+
+	t.regex(val, /Destination:/);
+
+	t.regex(val, /Brotli size/);
+
+	t.regex(val, /in version/);
+
+	if (colors.supportsColor()) {
+		// eslint-disable-next-line no-control-regex
+		t.regex(val, /\(was \u001b\[33m[\d.]+ KB/);
+	} else {
+		t.regex(val, /\(was [\d.]+ KB/);
+	}
+
+	// Should recreate the `.cache` folder
+	t.is(existsSync(".cache"), true);
+});
+
 test('fileSize should apply `showBeforeSizes` option as "build"', async (t) => {
 	await removeCacheDir();
 
 	const getLoggingData = filesize({ showBeforeSizes: "build" }, "test");
 	const val = await getLoggingData({ file: "./dist/index.js" }, bundle);
+	t.regex(val, /in last build/);
 	if (colors.supportsColor()) {
 		// eslint-disable-next-line no-control-regex
 		t.regex(val, /\(was \u001b\[33m[\d.]+ K?B/);

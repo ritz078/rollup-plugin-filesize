@@ -23,8 +23,12 @@ export default [
 			json(),
 			babel({
 				babelrc: false,
-				plugins: ["@babel/plugin-syntax-import-meta"],
-				presets: [["@babel/preset-env", { targets: { node: 8 } }]],
+				babelHelpers: "runtime",
+				plugins: [
+					"@babel/plugin-transform-runtime",
+					"@babel/plugin-syntax-import-meta",
+				],
+				presets: [["@babel/preset-env", { targets: { node: 10 } }]],
 			}),
 			filesize({
 				showBeforeSizes: "release",
@@ -39,10 +43,13 @@ export default [
 	},
 	...reporters.map((reporter) => {
 		return {
+			external: ["@babel/runtime"],
 			plugins: [
 				babel({
 					babelrc: false,
-					presets: [["@babel/preset-env", { targets: { node: 8 } }]],
+					babelHelpers: "runtime",
+					plugins: ["@babel/plugin-transform-runtime"],
+					presets: [["@babel/preset-env", { targets: { node: 10 } }]],
 				}),
 				filesize({
 					showBeforeSizes: "release",
