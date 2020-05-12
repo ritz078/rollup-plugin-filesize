@@ -23,8 +23,11 @@ export default [
 			json(),
 			babel({
 				babelrc: false,
-				babelHelpers: "bundled",
-				plugins: ["@babel/plugin-syntax-import-meta"],
+				babelHelpers: "runtime",
+				plugins: [
+					"@babel/plugin-transform-runtime",
+					"@babel/plugin-syntax-import-meta",
+				],
 				presets: [["@babel/preset-env", { targets: { node: 10 } }]],
 			}),
 			filesize({
@@ -40,10 +43,12 @@ export default [
 	},
 	...reporters.map((reporter) => {
 		return {
+			external: ["@babel/runtime"],
 			plugins: [
 				babel({
 					babelrc: false,
-					babelHelpers: "bundled",
+					babelHelpers: "runtime",
+					plugins: ["@babel/plugin-transform-runtime"],
 					presets: [["@babel/preset-env", { targets: { node: 10 } }]],
 				}),
 				filesize({
