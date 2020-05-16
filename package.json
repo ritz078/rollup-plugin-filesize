@@ -7,10 +7,12 @@
   "files": [
     "src",
     "dist",
+    "index.d.ts",
     "README",
     "!.DS_Store",
     "!.nyc_output"
   ],
+  "typings": "./index.d.ts",
   "scripts": {
     "lint": "eslint .",
     "test": "nyc ava test/index.test.js",
