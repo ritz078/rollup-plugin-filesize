@@ -24,7 +24,14 @@ function fixWindowsPath(path) {
 //  to remove slash instead
 // "file://" +
 const thisDirectory = fixWindowsPath(
-	dirname(new URL(import.meta.url).pathname)
+	dirname(
+		new URL(
+			// `import.meta.url` is giving backslashes in Windows currently
+			//  (at least in how it is compiled to CJS) which makes for an
+			//  invalid URL
+			import.meta.url.replace(/\\/g, "/")
+		).pathname
+	)
 );
 
 export default function filesize(options = {}, env) {
@@ -46,9 +53,7 @@ export default function filesize(options = {}, env) {
 		if (showBeforeSizes !== "none") {
 			let file = outputOptions.file || outputOptions.dest;
 			if (showBeforeSizes !== "build") {
-				const { name } = await import(
-					fixWindowsPath(join(process.cwd(), "./package.json"))
-				);
+				const { name } = await import(join(process.cwd(), "./package.json"));
 				try {
 					const output = join(thisDirectory, "../.cache");
 
@@ -63,6 +68,7 @@ export default function filesize(options = {}, env) {
 					file = pathResolve(output, file);
 				} catch (err) {
 					// Package might not exist
+					console.log(`Package, "${name}", was not found.`);
 					file = null;
 				}
 			}
@@ -71,6 +77,7 @@ export default function filesize(options = {}, env) {
 				try {
 					codeBefore = await readFile(file, "utf8");
 				} catch (err) {
+					console.log(`File, "${file}", was not found.`);
 					// File might not exist
 				}
 			}
@@ -139,9 +146,9 @@ export default function filesize(options = {}, env) {
 					if (typeof reporter === "string") {
 						let p;
 						if (reporter === "boxen") {
-							p = import(thisDirectory + "/reporters/boxen.js");
+							p = import(join(thisDirectory, "/reporters/boxen.js"));
 						} else {
-							p = import(fixWindowsPath(pathResolve(process.cwd(), reporter)));
+							p = import(pathResolve(process.cwd(), reporter));
 						}
 						reporter = (await p).default;
 					}
