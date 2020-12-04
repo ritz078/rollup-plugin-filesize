@@ -92,7 +92,7 @@ export default function filesize(options = {}, env) {
 			: "";
 
 		if (showMinifiedSize || showGzippedSize) {
-			const minifiedCode = terser.minify(code).code;
+			const minifiedCode = (await terser.minify(code)).code;
 			info.minSize = showMinifiedSize
 				? fileSize(minifiedCode.length, format)
 				: "";
@@ -107,7 +107,7 @@ export default function filesize(options = {}, env) {
 				? fileSize(await brotli(codeBefore), format)
 				: "";
 			if (showMinifiedSize || showGzippedSize) {
-				const minifiedCode = terser.minify(codeBefore).code;
+				const minifiedCode = (await terser.minify(codeBefore)).code;
 				info.minSizeBefore = showMinifiedSize
 					? fileSize(minifiedCode.length, format)
 					: "";
