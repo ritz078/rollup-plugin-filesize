@@ -36,6 +36,7 @@ export default [
 		],
 		input: "src/index.js",
 		output: {
+			exports: "default",
 			sourcemap: true,
 			file: `dist/index.js`,
 			format: "cjs",
