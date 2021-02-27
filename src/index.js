@@ -25,12 +25,14 @@ function fixWindowsPath(path) {
 // "file://" +
 const thisDirectory = fixWindowsPath(
 	dirname(
-		new URL(
-			// `import.meta.url` is giving backslashes in Windows currently
-			//  (at least in how it is compiled to CJS) which makes for an
-			//  invalid URL
-			import.meta.url.replace(/\\/g, "/")
-		).pathname
+		decodeURI(
+			new URL(
+				// `import.meta.url` is giving backslashes in Windows currently
+				//  (at least in how it is compiled to CJS) which makes for an
+				//  invalid URL
+				import.meta.url.replace(/\\/g, "/")
+			).pathname
+		)
 	)
 );
 
