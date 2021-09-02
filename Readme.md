@@ -51,7 +51,7 @@ Whether to show [Brotli](https://www.wikiwand.com/en/Brotli) size or not
 
 **Note: this feature is experimental and may be changed in a future release.**
 
-type: `"release", ``"build"`, or `"none"`
+type: `"release"`, `"build"`, or `"none"`
 default: `"none"`
 
 Indicates how, if any, comparisons will be shown between the
